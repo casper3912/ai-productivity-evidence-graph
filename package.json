@@ -1,0 +1,14 @@
+{
+  "name": "ai-productivity-evidence-graph",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Evidence Graph: AI, Productivity & Agentic-Loop Economics 2023–2026 — a self-contained, self-verifying interactive literature review.",
+  "scripts": {
+    "build": "python3 build.py",
+    "verify": "node verify/verify.js && node verify/verify-visual.js"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0",
+    "playwright": "1.56.0"
+  }
+}

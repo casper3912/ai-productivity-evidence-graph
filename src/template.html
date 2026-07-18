@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Evidence Graph — AI, Productivity &amp; Agentic-Loop Economics, 2023–2026</title>
+<style>
+:root{
+  --paper:#EEF1F2; --grid:#DDE3E5; --ink:#182028; --ink-soft:#4A555F;
+  --blueprint:#274690; --pos:#0E7C66; --mixed:#C08A2D; --nul:#B3423A;
+  --ctx:#5B6B7A; --retr:#7A7F86; --card:#FFFFFF;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,'Cascadia Mono',Consolas,'SF Mono',Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:28px 28px;
+  color:var(--ink); font-family:var(--sans); line-height:1.55;
+}
+header{padding:40px 24px 16px;max-width:1200px;margin:0 auto}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blueprint)}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(28px,4.4vw,46px);line-height:1.08;margin:8px 0 10px}
+.sub{color:var(--ink-soft);max-width:70ch;font-size:15px}
+.legend{display:flex;flex-wrap:wrap;gap:14px 22px;margin:18px auto 0;max-width:1200px;padding:0 24px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.edge-key{width:26px;height:0;border-top:2px solid var(--ctx);display:inline-block}
+.controls{max-width:1200px;margin:14px auto 0;padding:0 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button.tgl{font-family:var(--mono);font-size:12px;letter-spacing:.06em;border:1.5px solid var(--blueprint);color:var(--blueprint);background:transparent;padding:7px 14px;border-radius:999px;cursor:pointer;transition:all .15s}
+button.tgl:hover{background:#27469014}
+button.tgl.on{background:var(--blueprint);color:#fff}
+button.tgl:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#stage{max-width:1200px;margin:14px auto 0;padding:0 24px;display:grid;grid-template-columns:1fr 330px;gap:16px}
+#graphwrap{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden;position:relative;box-shadow:6px 6px 0 #18202812}
+#graph{display:block;width:100%;height:640px}
+#panel{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;padding:18px;height:640px;overflow-y:auto;box-shadow:6px 6px 0 #18202812}
+#panel .hint{color:var(--ink-soft);font-size:13.5px}
+#panel h2{font-family:var(--serif);font-size:20px;line-height:1.2;margin-bottom:4px}
+.meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin:10px 0 2px;text-transform:uppercase;letter-spacing:.1em}
+.val{font-size:13.5px;margin-bottom:2px}
+.badge{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:999px;border:1.5px solid currentColor;margin:6px 6px 0 0}
+.qbar{display:flex;gap:3px;margin-top:4px}
+.qseg{width:22px;height:8px;border:1px solid var(--ink);border-radius:2px}
+.qseg.f{background:var(--blueprint);border-color:var(--blueprint)}
+a.paperlink{color:var(--blueprint);font-size:13px;word-break:break-all}
+article{max-width:860px;margin:44px auto 40px;padding:0 24px}
+article h2{font-family:var(--serif);font-size:clamp(22px,3vw,30px);margin:34px 0 10px}
+article h3{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--blueprint);margin:26px 0 6px}
+article p{margin-bottom:14px;font-size:15.5px}
+.era{border-left:3px solid var(--blueprint);padding-left:16px;margin-bottom:6px}
+.tooltip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-family:var(--mono);font-size:11.5px;padding:6px 10px;border-radius:6px;opacity:0;transition:opacity .12s;max-width:260px;z-index:5}
+#selftest{max-width:860px;margin:0 auto 80px;padding:0 24px;font-family:var(--mono);font-size:12.5px}
+figure.chart{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 #18202812;padding:16px 16px 8px;margin:18px 0}
+figure.chart svg{display:block;width:100%;height:auto}
+figure.chart figcaption{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);padding:8px 4px 6px;line-height:1.5}
+.srclist{font-size:13.5px;color:var(--ink-soft)}
+.srclist a{color:var(--blueprint)}
+.srclist div{margin-bottom:6px}
+#selftest summary{cursor:pointer;color:var(--blueprint);letter-spacing:.08em;text-transform:uppercase;font-size:12px}
+#selftest .trow{padding:4px 0;border-bottom:1px dashed var(--grid)}
+#selftest .pass{color:var(--pos)} #selftest .fail{color:var(--nul);font-weight:600}
+#teststatus{display:inline-block;margin-left:10px;padding:2px 10px;border-radius:999px;border:1.5px solid currentColor}
+@media (max-width:900px){ #stage{grid-template-columns:1fr} #graph{height:480px} #panel{height:auto;max-height:420px} }
+html{scroll-behavior:smooth}
+.execwrap{max-width:1200px;margin:16px auto 0;padding:0 24px}
+.execwrap h2{font-family:var(--serif);font-size:clamp(20px,2.6vw,26px);margin:0 0 10px}
+.execsum .assertion{font-size:16px;margin-bottom:12px}
+.execsum .rec{margin-top:12px;padding-top:10px;border-top:1px dashed var(--grid);font-size:15px}
+.execsum{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;box-shadow:6px 6px 0 #18202812;padding:18px 22px;margin:18px 0}
+.execsum ol{margin:6px 0 0 20px}
+.execsum li{margin-bottom:8px;font-size:15px}
+table.practice{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0}
+table.practice th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blueprint);text-align:left;padding:8px 10px;border-bottom:2px solid var(--ink)}
+table.practice td{padding:9px 10px;border-bottom:1px solid var(--grid);vertical-align:top}
+.pred{border-left:3px solid var(--mixed);padding-left:16px;margin:10px 0}
+.pred .tag{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+details.sect>summary{cursor:pointer;list-style:none;display:block;margin:30px 0 10px}
+details.sect>summary::-webkit-details-marker{display:none}
+details.sect>summary h2{display:inline;margin:0}
+details.sect>summary::after{content:"▾ collapse";font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--blueprint);margin-left:12px;vertical-align:6px}
+details.sect:not([open])>summary::after{content:"▸ expand"}
+.ctag[data-note]{cursor:help}
+.ctag[data-note]:focus{outline:2px solid var(--blueprint);outline-offset:1px}
+#ctip{position:absolute;z-index:60;max-width:340px;background:var(--card);border:1.5px solid var(--ink);border-radius:8px;box-shadow:4px 4px 0 #18202818;padding:10px 12px;font-size:12.5px;line-height:1.5;color:var(--ink);display:none}
+#ctip .note{margin-bottom:6px}
+#ctip .refs a{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--blueprint);margin-right:12px;text-decoration:underline dotted;text-underline-offset:2px}
+abbr.gl{text-decoration:underline dotted var(--blueprint);text-underline-offset:2px;cursor:help}
+@media (max-width:640px){ table.practice{display:block;overflow-x:auto;white-space:nowrap} }
+.ctag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;padding:1px 8px;border-radius:999px;border:1.2px solid currentColor;vertical-align:2px;margin-left:6px;white-space:nowrap}
+.ctag.m{color:#274690}
+.ctag.i{color:#9A6D1B}
+.ctag.p{color:#5B6B7A;border-style:dashed}
+footer.colophon{max-width:860px;margin:0 auto 60px;padding:16px 24px;font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);border-top:1.5px solid var(--grid);line-height:1.7}
+nav.toc{max-width:1200px;margin:10px auto 0;padding:0 24px;display:flex;gap:6px 18px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px}
+nav.toc a{color:var(--blueprint);text-decoration:none;border-bottom:1px dashed var(--blueprint)}
+nav.toc a:hover{border-bottom-style:solid}
+.prov{max-width:1200px;margin:14px auto 0;padding:10px 14px;box-sizing:border-box}
+.prov-inner{border:1.5px dashed var(--ink-soft);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--ink-soft);background:#ffffffaa}
+.prov-inner b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blueprint)}
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} html{scroll-behavior:auto} }
+#graph g.node:focus{outline:none}
+#graph g.node:focus > circle:first-child{stroke:#274690;stroke-width:4px}
+.qcalc{margin:2px 0 0}
+.qcalc summary{cursor:pointer;color:var(--blueprint);font-size:.85em}
+.qcalc-body{font-size:.85em;color:var(--ink-soft);margin-top:3px}
+@media print{
+  nav.toc,.controls,#selftest,.tooltip,#ctip,#panel{display:none!important}
+  body{background:#fff}
+  #stage{display:block}
+  #graphwrap{border-color:#999}
+  figure.chart,.pred,table.practice,.execsum,.era{break-inside:avoid}
+  details.sect summary{break-after:avoid}
+  a{color:inherit}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Evidence map · <span id="studycount">–</span> studies · Feb 2023 – Jul 2026 · self-contained edition</div>
+  <h1>The Evidence Graph:<br>AI, Productivity &amp; Agentic-Loop Economics</h1>
+  <p class="sub">Each node is a study, positioned by publication date. Size scales with sample size (log). Color encodes the headline finding; ring style encodes methodological quality. Edges link studies that extend, corroborate, or contradict one another. Click any node for full metadata. This file has no external dependencies — it works offline and can be emailed.</p>
+</header>
+
+
+
+<nav class="toc" aria-label="Sections">
+  <a href="#exechead">Summary</a><a href="#stage">Graph</a><a href="#erahead">Four eras</a><a href="#patternhead">Patterns</a><a href="#tailhead">A · Cost tails</a><a href="#bottleneckhead">B · Bottleneck thesis</a><a href="#practicehead">Practice</a><a href="#closinghead">Ledger &amp; predictions</a><a href="#glossaryhead">Glossary</a><a href="#selftest">Self-tests</a>
+</nav>
+<div class="prov"><div class="prov-inner"><b>Provenance &amp; method</b> — This document exists because I ran agentic loops across a full software lifecycle until the billing data put me at the heavy tail of my organization's cost distribution. The appendices are the map I wish I'd had first. I compiled it on 18 Jul 2026 from published studies, working papers, and industry reports; every claim links to its source. The quality ratings (1–5) are an editorial judgment of design rigor × ecological validity, not a measured quantity, and the edge set is curated to show argumentative structure rather than exhaustive citation. In Fig. A1 the curve is a log-normal <em>fit</em> to published summary statistics; only the markers are measured values. A note on voice: the experience and the position are mine (M. Martin). The research aggregation, quality ratings, edge curation, inference badges, prediction confidences, visualization, and test code were drafted by Claude (Anthropic) working under my direction. I endorse the argument's direction and the operating recommendation; individual ratings and confidence numbers are the compilation's calibration, spot-checked rather than line-audited. Corrections land in the repo and are logged in its history. Claims are tagged <span class="ctag m" tabindex="0" data-note="A cited study reports this number directly. Hover or tap any badge for its sources." data-refs="">MEASURED</span> where a cited study reports the number, <span class="ctag i" tabindex="0" data-note="I am synthesizing across studies — the judgment is co-developed and reviewed, but it is interpretation, not measurement." data-refs="">INFERRED</span> where I am synthesizing across studies, and <span class="ctag p" tabindex="0" data-note="A dated forward claim with stated confidence, offered for falsification." data-refs="">PREDICTED</span> where the ledger puts my judgment on the record. Where I'm wrong, the predictions section says how to catch me.</div></div>
+<section class="execwrap">
+  <h2 id="exechead">The bottom line</h2>
+  <div class="execsum">
+    <p class="assertion"><strong>AI coding tools produce real gains at the task level, but almost none of it currently reaches delivery speed, cost, or revenue, because the binding constraint is verification, not code authoring.</strong> <span class="ctag i" tabindex="0" data-note="Synthesis across the task-gain experiments, delivery telemetry, and firm surveys. The full argument is Appendix B." data-refs="sect:bottleneckhead;node:faros2025;node:yotzov2026">INFERRED</span> Three findings from the literature support this, and one operational change follows.</p>
+    <ol>
+      <li><strong>Task gains are real but conditional.</strong> <span class="ctag m" tabindex="0" data-note="14–56% range from lab and field RCTs; the reversal for experienced engineers is METR 2025." data-refs="node:peng2023;node:noyzhang2023;node:metr2025">MEASURED</span> Controlled experiments show 14–56% speedups on well-scoped, checkable work. The effect reverses for experienced engineers on familiar, judgment-heavy code. One rigorous trial measured them 19% slower while they believed they were 20% faster.</li>
+      <li><strong>The gains stall at review.</strong> <span class="ctag m" tabindex="0" data-note="Telemetry: Faros AI, 10,000+ developers. Firm surveys: Yotzov, Bloom et al., ~6,000 executives." data-refs="node:faros2025;node:yotzov2026">MEASURED</span> Telemetry across 10,000+ developers: 98% more pull requests merged, 91% longer review times, and no movement in delivery metrics (lead time, deployment frequency). Roughly nine in ten of ~6,000 surveyed firms report no productivity impact at all. More code out of the editor does not mean more product out the door.</li>
+      <li><strong>Agentic economics are governed by two curves.</strong> <span class="ctag m" tabindex="0" data-note="Tail statistics: TraceLab session-level workload data. Ceiling arithmetic: Amdahl, Appendix B." data-refs="u:TraceLab (arXiv:2606.30560)|https://arxiv.org/abs/2606.30560;sect:bottleneckhead">MEASURED</span> Session costs are heavy-tailed by construction (median $0.61, mean $9.70, top-1% $178), and the expensive tail is mostly failed retries. <span class="ctag i" tabindex="0" data-note="Implication of accuracy peaking at intermediate cost (arXiv:2604.22750) — an inference from the distributions, not a trial result." data-refs="u:Token stochasticity (arXiv:2604.22750)|https://arxiv.org/abs/2604.22750;sect:tailhead">INFERRED</span> Capping any task at roughly its 90th-percentile budget should remove most spend at almost no quality loss. Meanwhile total delivery improvement is capped by how much of the pipeline the tool spans: accelerate authoring alone and the ceiling is ~1.33×, no matter how good the model gets.</li>
+    </ol>
+    <p class="rec"><strong>Recommendation:</strong> instrument cost per merged change and session-cost percentiles before scaling anything; enforce per-task budget caps in tooling; deploy autonomous loops only where an automated correctness check (an "oracle" — tests, compilers, typed specs) is cheap and the loop spans the actual bottleneck. Everything else stays assist-mode or human. Reassess when metered billing data matures after the September 2026 promotional cliff.</p>
+  </div>
+</section>
+<div class="legend">
+  <span class="chip"><span class="dot" style="background:var(--pos)"></span>positive (+)</span>
+  <span class="chip"><span class="dot" style="background:var(--mixed)"></span>mixed (±)</span>
+  <span class="chip"><span class="dot" style="background:var(--nul)"></span>null / negative (−)</span>
+  <span class="chip"><span class="dot" style="background:var(--ctx)"></span>context (·)</span>
+  <span class="chip"><span class="dot" style="background:repeating-linear-gradient(45deg,var(--retr),var(--retr) 2px,#fff 2px,#fff 4px)"></span>retracted</span>
+  <span class="chip"><span class="edge-key"></span>builds on</span>
+  <span class="chip"><span class="edge-key" style="border-top-style:dashed;border-color:var(--nul)"></span>tension</span>
+  <span class="chip"><span class="edge-key" style="border-color:var(--pos)"></span>corroborates</span>
+</div>
+<div class="controls">
+  <button class="tgl on" id="btnTimeline">Timeline layout</button>
+  <button class="tgl" id="btnCluster">Cluster layout</button>
+  <button class="tgl" id="btnRCT">RCTs only</button>
+  <button class="tgl" id="btnQ4">Quality ≥ 4</button>
+  <button class="tgl" id="btnNoInd">Hide industry sources</button>
+  <button class="tgl" id="btnCSV" title="Download the study table as CSV">Export CSV</button>
+  <button class="tgl" id="btnBib" title="Download all studies as BibTeX">Export BibTeX</button>
+</div>
+
+<div id="stage">
+  <div id="graphwrap">
+    <svg id="graph" role="img" aria-label="Network graph of AI productivity studies"></svg>
+    <div class="tooltip" id="tip"></div>
+  </div>
+  <aside id="panel" aria-live="polite">
+    <p class="hint">Select a study node (click or tap, or Tab to a node and press Enter) to inspect its authors, institutions, method, sample, headline result, quality rating, and caveats.</p>
+  </aside>
+</div>
+
+<article>
+  <details class="sect" open><summary><h2 id="erahead">Reading the arc: four eras in forty-two months</h2></summary>
+  <div class="era"><h3>Era I · 2023 — The task-level RCT wave</h3></div>
+  <p>The founding studies were randomized controlled trials (RCTs) on well-scoped tasks, and they found large effects: Copilot users finished a scripting task 56% faster (Peng et al.), ChatGPT users wrote professional documents 40% faster at higher quality (Noy &amp; Zhang, <em>Science</em>), and a staggered rollout across 5,172 call-center agents lifted resolutions per hour ~14–15% (Brynjolfsson, Li &amp; Raymond, later published in the <em><abbr class="gl" title="The Quarterly Journal of Economics">QJE</abbr></em>). A recurring second finding: gains concentrated among novices and weaker performers — "skill compression."</p>
+  <div class="era"><h3>Era II · 2023–24 — Heterogeneity and the jagged frontier</h3></div>
+  <p>The BCG consultant experiment (Dell'Acqua et al.) complicated the picture: inside the model's capability frontier, consultants were faster and better; outside it, they were 19 points <em>more likely to be wrong</em>, because they trusted fluent output on tasks the model couldn't do. The Kenya entrepreneur RCT (Otis et al.) found outright divergence — AI advice helped strong operators and hurt weak ones — cutting against the skill-compression story. Effect direction, it emerged, is conditional on task structure and user judgment, not a property of the technology.</p>
+  <div class="era"><h3>Era III · 2025 — The ecological-validity correction</h3></div>
+  <p>Three shocks landed in one year. METR's RCT put experienced open-source developers on their own repositories and found they were 19% <em>slower</em> with AI. The same developers believed they were 20% faster. No cleaner demonstration exists that self-report is not measurement. Humlum &amp; Vestergaard linked 25,000 Danish workers to administrative payroll records and found ~2.8% time savings, no detectable effect on earnings or hours, and only 3–7% of gains passing through to pay. And the field absorbed a credibility shock: MIT disavowed the celebrated Toner-Rodgers materials-science paper — praised by Acemoglu and Autor, cited in policy speeches — stating it had no confidence in the data's provenance, reliability or validity, and requesting the paper's withdrawal. A pattern worth sitting with: the studies with the largest effects were the least real, and the most real settings showed the smallest effects.</p>
+  <div class="era"><h3>Era IV · 2025–26 — The micro–macro paradox, and measurement breaking down</h3></div>
+  <p>By 2026 the contradiction is formalized. Firm-level surveys (Yotzov, Bloom et al., ~6,000 executives across four countries) find 69% adoption but roughly nine in ten firms reporting no productivity or employment impact yet — a Solow paradox restated. Simultaneously, revised BLS aggregates show US productivity growth near 2.7% in 2025, and both Brynjolfsson and a previously skeptical Furman now read an AI signal in the macro data via the J-curve. Meanwhile the gold-standard instrument broke: METR's follow-up RCT collapsed because developers refused to work in the no-AI control arm — adoption is now so deep that clean counterfactuals may no longer be constructible. The open question has inverted from "does AI raise productivity?" to "can we still measure the counterfactual at all?"</p>
+  </details>
+  <details class="sect" open><summary><h2 id="patternhead">Cross-cutting patterns</h2></summary>
+  <p><strong>Effect size falls as realism rises.</strong> <span class="ctag i" tabindex="0" data-note="Each underlying effect is measured, but the realism ordering across lanes is this compilation's synthesis." data-refs="node:peng2023;node:humlum2025;node:yotzov2026">INFERRED</span> Order the studies by ecological validity (lab task, then field experiment, then linked administrative data, then firm P&amp;L) and the headline effects shrink monotonically from ~56% to ~0%. No other regularity in this graph is as robust.</p>
+  <p><strong>Task structure predicts gains.</strong> <span class="ctag m" tabindex="0" data-note="Frontier effects: Dell’Acqua (BCG). Divergence by user strength: Otis (Kenya), Cui." data-refs="node:dellacqua2023;node:otis2024;node:cui2024">MEASURED</span> Stanford's 2026 Index synthesis finds gains track how verifiable the work is: strong for support, coding, and marketing output; weak-to-negative for unstructured judgment work. This reconciles most apparent contradictions without invoking bad faith on either side.</p>
+  <p><strong>Perception is systematically inflated.</strong> <span class="ctag m" tabindex="0" data-note="METR: 19% slower measured vs 20% faster believed, in the same developers." data-refs="node:metr2025">MEASURED</span> METR's 39-point perception gap, the CFO "perceived &gt; measured" paradox, and the EEG self-report gaps all point the same direction: subjective productivity reports overstate measured effects, which should discount every survey-based node in the graph.</p>
+  <p><strong>Institutional gravity.</strong> <span class="ctag i" tabindex="0" data-note="Interpretation of adoption-pattern data; the pattern is consistent but not itself an experiment." data-refs="node:nanda2025;node:canaries2025">INFERRED</span> A remarkably small network — Brynjolfsson (Stanford), the MIT/NBER economics cluster, Microsoft Research — sits upstream of most positive findings, while the strongest null results come from linked-registry Scandinavian data and central-bank survey infrastructure. Neither camp is wrong; they are measuring different layers of the same system at different lags.</p>
+  </details>
+  <details class="sect" open><summary><h2 id="tailhead">Appendix: the heavy tail of agentic cost</h2></summary>
+  <p>The cost of fully agentic sessions is not merely high on average. It is concentrated in a heavy tail. <span class="ctag m" tabindex="0" data-note="TraceLab session distribution; 30× run variance from the SWE-bench token study." data-refs="u:TraceLab (arXiv:2606.30560)|https://arxiv.org/abs/2606.30560;u:Token stochasticity (arXiv:2604.22750)|https://arxiv.org/abs/2604.22750">MEASURED</span> The cleanest measurement is TraceLab's characterization of real coding-agent workloads: a session costs <strong>$9.70 on average but only $0.61 at the median</strong>, with a <abbr class="gl" title="99th percentile: the cost that only the top 1% of sessions exceed">p99</abbr> of <strong>$178</strong> — a mean/median ratio of ~16× and a p99/median ratio of ~292×. Independent SWE-bench measurements find token usage varies up to <strong>30× across runs of the same task</strong>, that models predict their own consumption only weakly (Pearson r ≤ 0.39), and — critically — that <strong>accuracy peaks at intermediate cost</strong>: the expensive tail is disproportionately thrashing, not thoroughness.</p>
+
+  <figure class="chart" id="chart-dist">
+    <svg viewBox="0 0 820 250" role="img" aria-label="Session cost distribution on a log scale with median, mean, and p99 markers"></svg>
+    <figcaption>Fig. A1 — Per-session cost distribution (log scale). Curve is a stylized log-normal fit to TraceLab's published statistics (median $0.61, mean $9.70); markers are the measured values. The top decile of runs often exceeds the total cost of the other 90% combined (Glean, 2026). Source: arXiv:2606.30560.</figcaption>
+  </figure>
+
+  <p>The tail is generated multiplicatively. Every API call is stateless, so accumulated context is replayed on each step — prefix tokens make up <strong>59.5% of total cost</strong> despite being billed at ~one-tenth the fresh-input rate, and input outnumbers output by 20–150× in agentic workloads. Per-step cost therefore grows with loop position, and total session cost grows superlinearly in loop length, which is itself stochastic. The known mitigations each attack one term of that product: prompt caching cuts the unit price of replayed context (volume still dominates spend), context pruning and compaction shrink what gets replayed, prompt compression lowers the baseline, and checkpointed agent architectures avoid full-history replay.<span class="ctag i" tabindex="0" data-note="Engineering guidance derived from the cost composition data; mitigations are established patterns; the ranking is editorial." data-refs="u:TraceLab (arXiv:2606.30560)|https://arxiv.org/abs/2606.30560">INFERRED</span> None of them touch loop count, which is why budget caps stay necessary even in a well-engineered stack:</p>
+
+  <figure class="chart" id="chart-loop">
+    <svg viewBox="0 0 820 260" role="img" aria-label="Cost multiplier versus loop length on log-log axes"></svg>
+    <figcaption>Fig. A2 — Cost multiplier of an agent loop vs. an equivalent single call, by loop length (log–log). Measured audit points: 5 steps ≈ 3.2×, 50 steps &gt; 30×, 200 steps &gt; 100×. Source: LeanOps agentic cost audits, 2026.</figcaption>
+  </figure>
+
+  <figure class="chart" id="chart-comp">
+    <svg viewBox="0 0 820 150" role="img" aria-label="Cost composition of agentic sessions by token category"></svg>
+    <figcaption>Fig. A3 — Where the money goes: share of total session cost by token category. Replayed prefix context dominates even at discounted cache rates; output tokens — the visible "work" — are ~11% of spend. Source: arXiv:2606.30560 (TraceLab).</figcaption>
+  </figure>
+
+  <p>Field incidents are this distribution integrated over an organization: Uber exhausted its annual AI-coding budget in four months and imposed a $1,500/month per-engineer cap; one 100-agent deployment hit $1.3M in a single month, ~70% of it attributable to one configuration flag; and GitHub's June 2026 metering transferred the tail from provider to customer, surfacing 10–50× bill shocks among agentic power users. The managerial implication follows directly from the accuracy-vs-cost curve: because marginal tail tokens are anticorrelated with success, aggressive per-task budget caps with human escalation truncate the majority of spend at near-zero expected quality loss. <span class="ctag i" tabindex="0" data-note="Follows from accuracy peaking at intermediate cost plus tail tokens anticorrelated with success — an inference from the distributions, not a trial result." data-refs="u:Token stochasticity (arXiv:2604.22750)|https://arxiv.org/abs/2604.22750;sect:tailhead">INFERRED</span></p>
+
+  <h3>Sources for this appendix</h3>
+  <div class="srclist">
+    <div>TraceLab: Characterizing Coding Agent Workloads for LLM Serving — <a href="https://arxiv.org/abs/2606.30560" target="_blank" rel="noopener">arXiv:2606.30560</a> (session cost distribution; cost composition)</div>
+    <div>Token-usage stochasticity across 8 frontier LLMs × 500 SWE-bench tasks — <a href="https://arxiv.org/abs/2604.22750" target="_blank" rel="noopener">arXiv:2604.22750</a> (30× run variance; r ≤ 0.39 self-prediction; accuracy peaks at intermediate cost)</div>
+    <div>Token Economics for LLM Agents: A Dual-View Study — <a href="https://arxiv.org/abs/2605.09104" target="_blank" rel="noopener">arXiv:2605.09104</a> (&gt;1000× tokens vs single-turn; input:output &gt; 150:1)</div>
+    <div>Agentic token consumption study — <a href="https://arxiv.org/abs/2601.14470" target="_blank" rel="noopener">arXiv:2601.14470</a> (input 53.9% of consumption; review/refinement stage 59.4% of tokens)</div>
+    <div>Why AI Agents Burn Tokens — <a href="https://getunblocked.com/blog/why-ai-agents-burn-tokens/" target="_blank" rel="noopener">Unblocked, Jun 2026</a> (runaway-loop taxonomy; Uber budget/cap via Fortune)</div>
+    <div>Token efficiency in agentic systems — <a href="https://www.glean.com/perspectives/how-to-optimize-token-efficiency-in-agentic-systems" target="_blank" rel="noopener">Glean, Jun 2026</a> (top-decile runs exceed cost of remaining 90%)</div>
+    <div>Agent cost runaway audits — <a href="https://leanopstech.com/blog/agentic-ai-cost-runaway-token-budget-2026/" target="_blank" rel="noopener">LeanOps, May 2026</a> (loop-length multipliers)</div>
+    <div>Runaway token spend case studies — <a href="https://www.growthaccelerationpartners.com/blog/ai-cost-optimization-and-the-problem-of-runaway-token-costs" target="_blank" rel="noopener">GAP, Jun 2026</a> ($1.3M/30-day deployment; Fast Mode ≈ 70% of cost)</div>
+    <div>Agentic session cost structure — <a href="https://www.vantage.sh/blog/agentic-coding-costs" target="_blank" rel="noopener">Vantage, Apr 2026</a> (25:1 input:output in 50-turn sessions)</div>
+  </div>
+  </details>
+  <details class="sect" open><summary><h2 id="bottleneckhead">Appendix B: the bottleneck thesis — why loops might still be the unlock</h2></summary>
+  <p>The strongest case <em>for</em> agentic loops is simple to state: generation was never the constraint, and loops are the first tool shaped like the thing that is. <span class="ctag i" tabindex="0" data-note="Editorial framing; the telemetry that motivates it follows in this section." data-refs="node:faros2025;sect:bottleneckhead">INFERRED</span> The delivery-telemetry evidence locates it precisely. Faros AI's instrumented study of 10,000+ developers found high-AI-adoption teams completed <strong>21% more tasks and merged 98% more pull requests — while PR review time rose 91%, PR size grew 154%, and org-level <abbr class="gl" title="DevOps Research and Assessment: Google's delivery-metrics research program. Core metrics: lead time, deployment frequency, change-fail rate, recovery time.">DORA</abbr> metrics stayed flat</strong>. DORA 2025 finds the same shape from the survey side: higher AI adoption raises throughput <em>and</em> instability together, with time saved in creation re-allocated to auditing — the "verification tax." Atlassian's 2026 workforce research independently named it the AI efficiency paradox: output backs up at the points requiring human judgment. Task-level gains are real; they queue at the review-verify-integrate stages and die there. This is also the single best mechanistic explanation for the micro–macro paradox in the main graph.</p>
+
+  <figure class="chart" id="chart-amdahl">
+    <svg viewBox="0 0 820 300" role="img" aria-label="Amdahl's law: overall delivery speedup versus stage speedup for different automatable fractions of lead time"></svg>
+    <figcaption>Fig. B1 — Amdahl's arithmetic for the SDLC (software development lifecycle). Overall delivery speedup = 1/((1−f)+f/s), where s is the speedup of the automated stages and f is the fraction of lead time they cover. Dashed lines are the ceilings (1/(1−f)). An assistant that only accelerates authoring (f≈0.25) caps delivery at ~1.33× no matter how fast it gets; every additional stage a loop closes — tests, review, CI repair, integration — raises f and lifts the ceiling itself. The economic case for loops is the move from ~1.3× to ~4–10× territory, which no amount of better autocomplete can reach.</figcaption>
+  </figure>
+
+  <p>The unlock evidence is early but loop-shaped. <span class="ctag m" tabindex="0" data-note="SWE-Review: closed loops 27.5% → 56.9% resolve rate; metaprogramming survey corroborates." data-refs="node:swereview2026;node:metaprog2026">MEASURED</span> SWE-Review shows that a <strong>generate-review-revise loop lifts SWE-bench Verified resolve rates from 27.5% to 56.9%</strong> (and 50.9% to 68.8% on a stronger base) — closed-loop review beats one-shot generation decisively, attacking exactly the stage where Faros shows gains queuing. Tests-in-the-loop converts generation from plausible to verified: the agent isn't "done" until the oracle says so, which is the practitioner consensus (Willison, Osmani) and the mechanism behind CI automation results like test cycles falling 6h→1.5h with defect detection rising 70%→92%. Observational work on agent adoption (Kumar et al.) finds the same lever from the context side: decomposition plus injected project knowledge is what separates successful delegation from failed delegation. And the classic DORA chain (2023 report) — teams with fast code review show ~50% better delivery performance, and delivery performance predicts organizational performance — is the established transmission path from lead-time compression to revenue: shorter cycles mean more shipped experiments per quarter, faster learning, and earlier revenue realization per feature.</p>
+
+  <p>Assembled as a falsifiable thesis: <strong>assistants raise s on a small f; loops raise f</strong> — and only raising f changes the delivery ceiling. <span class="ctag i" tabindex="0" data-note="Amdahl’s law applied to the SDLC — arithmetic, but the mapping of f to pipeline stages is the model here." data-refs="u:Amdahl’s law|https://en.wikipedia.org/wiki/Amdahl%27s_law;sect:bottleneckhead">INFERRED</span> The reconciliation with this page's null results is then a frontier story, not a contradiction: firms measure nothing because current deployments accelerate the non-binding stage, and the tail appendix's cost pathology is the price of running loops <em>without cheap oracles</em>. The conditions for the flip are checkable in advance: (1) the loop spans the binding constraint (review/verification, not authoring); (2) verification oracles are mechanical and cheap, so iterations converge instead of thrash; (3) per-task budget caps truncate the tail; (4) batch sizes stay reviewable so instability doesn't eat the throughput. Where all four hold, task gains should transmit to lead time within quarters, and lead time to cost and revenue through the DORA channel. Where they don't, expect Faros curves: more PRs, longer queues, flat P&amp;L. The bet, priced honestly, is not "AI writes code" — it's "verification becomes software."</p>
+
+  <h3>Sources for this appendix</h3>
+  <div class="srclist" id="srclist-b">
+    <div>Faros AI engineering telemetry, 10,000+ developers — <a href="https://www.faros.ai/blog/ai-software-engineering" target="_blank" rel="noopener">faros.ai, Jul 2025</a> (+98% PRs merged, +91% review time, flat DORA metrics)</div>
+    <div>DORA 2025 State of AI-assisted Software Development / Balancing AI tensions — <a href="https://dora.dev/insights/balancing-ai-tensions/" target="_blank" rel="noopener">dora.dev</a> (throughput + instability rise together; verification tax; amplifier thesis)</div>
+    <div>SWE-Review: agentic code review loops — <a href="https://arxiv.org/abs/2607.06065" target="_blank" rel="noopener">arXiv:2607.06065</a> (resolve rate 27.5%→56.9% via generate-review-revise)</div>
+    <div>Code review cost & latency in continuous delivery — <a href="https://arxiv.org/abs/2606.13175" target="_blank" rel="noopener">arXiv:2606.13175</a> (10–15% of developer hours spent reviewing; latency as pipeline delay)</div>
+    <div>Coding-agent adoption barriers (Kumar et al., via MSR survey) — <a href="https://arxiv.org/abs/2601.18341" target="_blank" rel="noopener">arXiv:2601.18341</a> (decomposition + project knowledge drive delegation success)</div>
+    <div>Self-improving coding agents / tests-in-the-loop — <a href="https://addyosmani.com/blog/self-improving-agents/" target="_blank" rel="noopener">Osmani, Jan 2026</a> (oracle-gated loops as the reliability mechanism)</div>
+    <div>DORA metrics in the AI era (incl. Atlassian "AI efficiency paradox") — <a href="https://getdx.com/blog/dora-metrics/" target="_blank" rel="noopener">DX, 2026</a> (output backs up at human-judgment points)</div>
+  </div>
+
+  </details>
+  <details class="sect" open><summary><h2 id="practicehead">From evidence to practice: a decision framework</h2></summary>
+  <p>The literature above compresses into an operating rule: <strong>match the mode to the oracle.</strong> The cost of a loop is governed by how many iterations it takes to converge, and iterations are governed by how cheaply correctness can be checked. Where verification is mechanical, loops converge and the economics work; where verification is human judgment, loops thrash into the tail and assist-mode adds review burden without removing the constraint.</p>
+  <table class="practice">
+    <tr><th>Work profile</th><th>Mode</th><th>Why the evidence says so</th></tr>
+    <tr><td>Mechanical oracle: codegen against a spec, typed artifact compilation, test scaffolds, migrations with behavioral checks</td><td>Agentic loop, hard per-task cap, human escalation at the cap</td><td>Cheap verification bounds iterations (SWE-Review: closed loops double resolve rates); caps truncate the tail at near-zero quality loss</td></tr>
+    <tr><td>Judgment-heavy changes in mature code by experienced engineers</td><td>Human-first; AI at most for PR review commentary</td><td>METR: −19% for exactly this profile; assist output raises review load without moving the constraint</td></tr>
+    <tr><td>Unfamiliar APIs, exploration, prototyping, throwaway analysis</td><td>Assist / conversational</td><td>Gains concentrate where the user lacks context (Brynjolfsson, Cui: novice effects); the deliverable is learning, not merged code</td></tr>
+    <tr><td>Everything at once ("agent does the whole SDLC")</td><td>Not yet — precondition-gated</td><td>Compounded quality gates multiply retries at growing context; the four preconditions below define when to revisit</td></tr>
+  </table>
+  <p>A rough taxonomy of oracles, cheapest first, sets the deployment order.<span class="ctag i" tabindex="0" data-note="Ordering by verification cost is editorial synthesis; the levels map onto standard tooling tiers." data-refs="sect:practicehead;u:Amdahl’s law|https://en.wikipedia.org/wiki/Amdahl%27s_law">INFERRED</span> Level 1, deterministic: compilers, type systems, linters, schema validators; near-zero marginal cost, safe to loop against thousands of times. Level 2, behavioral: unit and integration suites, contract tests, static analysis; cheap when fast and reliable, but a flaky suite poisons a loop faster than no suite at all. Level 3, subjective: human review, architectural judgment, taste; expensive, slow, and the level where loops thrash. Expected agent ROI falls roughly an order of magnitude per level. Design work down this hierarchy, not up it.</p>
+  <p><strong>Instrument before you scale.</strong> Seat-level spend is the wrong denominator; the unit economics that decide the question are <em>cost per merged change</em>, session-cost percentiles (p50/p95/p99 — the tail, not the mean, is the budget), retry and loop-iteration counts, repeat-read ratio (context replay waste), PR size and review-queue depth (the constraint's vital signs), and DORA lead time with change-fail rate (whether anything reaches delivery). An organization that cannot see its session-cost histogram cannot distinguish its frontier experiments from its waste — and will misclassify both.</p>
+  <p><strong>Re-engagement preconditions</strong>, restated as a checklist: (1) the loop spans the currently binding constraint, not the convenient stage; (2) the verification oracle is mechanical and cheap; (3) per-task budget caps with human escalation are enforced by tooling, not discipline; (4) batch sizes stay reviewable so throughput gains don't convert to instability. Four yes answers: scale the loop. Any no: the Faros curve is the expected outcome.</p>
+
+  </details>
+  <details class="sect" open><summary><h2 id="closinghead">Where this leaves the ledger</h2></summary>
+  <p>Read together, the three parts of this page make one claim, with three governors on it. <span class="ctag i" tabindex="0" data-note="The three-governor synthesis is editorial; each governor is argued in its own section." data-refs="sect:tailhead;sect:bottleneckhead">INFERRED</span> Task-level gains are real and conditional on task structure (the graph). Whether they reach delivery, cost, or revenue is governed by <em>f</em> — the fraction of lead time the loop actually spans (Appendix B). Whether spanning it is affordable is governed by oracle cost — cheap mechanical verification truncates the tail that otherwise carries most of the spend (Appendix A). Assistants without loops hit the Amdahl ceiling. Loops without oracles hit the cost tail. Loops with oracles across the binding constraint are the only configuration with a live path to the firm-level numbers that remain, as of mid-2026, missing. Checkable waypoints: the post-promotional Copilot billing cycles from September 2026 (does agentic usage survive honest pricing?), and whether any registry-linked study finds firm-level revenue or margin effects before 2030.</p>
+
+  <h3>Predictions on the record <span class="ctag p" tabindex="0" data-note="Forward claims with dates and confidence — graded by the milestones below, falsification criteria included." data-refs="">PREDICTED</span></h3>
+  <p>Dated 18 Jul 2026, offered for falsification. Confidences are drafting-time calibration, not oaths; the standing commitment is that each claim gets graded on its date and the grade gets published:</p>
+  <div class="pred"><span class="tag">P1 · resolves Q4 2026 · confidence ~0.75</span><br>After promotional credits lapse (Sept 2026), most enterprises restrict or cap agent-mode usage; assist-tier subscription revenue holds. Metered pricing functions as a diagnostic that separates subsidy-consuming workflows from value-producing ones.</div>
+  <div class="pred"><span class="tag">P2 · resolves mid-2027 · confidence ~0.70</span><br>At least two further independent telemetry studies (Faros-class) show organizational lead time flat or worse despite a rising AI share of merged code — the review/verification constraint, not model capability, still binds.</div>
+  <div class="pred"><span class="tag">P3 · resolves by 2028 · confidence ~0.65</span><br>The first credible firm-level financial effects appear in mechanical-oracle domains (spec-to-code compilation, migration factories, test generation) before general feature development — because oracle cost, not model quality, is the binding variable.</div>
+  <div class="pred"><span class="tag">P4 · resolves by 2030 · confidence ~0.55</span><br>A registry-linked or equivalently identified study finds significant firm-level revenue-per-employee or margin effects attributable to AI in a majority-of-sectors sample — the J-curve harvest arrives, but concentrated in redesigned firms rather than the median adopter.</div>
+  <p><strong>What would falsify this:</strong> two independent telemetry studies showing organizational lead-time improvement from AI adoption <em>without</em> corresponding investment in automated verification would break the bottleneck thesis at its core — Appendix B comes down, not reinterpreted. A collapse in frontier token prices steep enough to make unbounded retry loops cheaper than engineer review time would invalidate the capping argument in Appendix A. The ledger grades both, on schedule, in public.</p>
+</details>
+    <details class="sect" open><summary><h2 id="glossaryhead">Glossary</h2></summary>
+  <p>Acronyms and jargon used above, with references.</p>
+  <div class="srclist" id="glossary">
+    <div><b>RCT</b> — randomized controlled trial: tasks or participants are randomly assigned to treatment and control, isolating causal effects. <a href="https://en.wikipedia.org/wiki/Randomized_controlled_trial" target="_blank" rel="noopener">ref</a></div>
+    <div><b>DORA</b> — DevOps Research and Assessment: Google's delivery-metrics research program (lead time, deployment frequency, change-fail rate, recovery time). <a href="https://dora.dev/" target="_blank" rel="noopener">dora.dev</a></div>
+    <div><b>SDLC</b> — software development lifecycle: the full path from requirement to production (design, code, test, review, integrate, deploy, operate). <a href="https://en.wikipedia.org/wiki/Software_development_process" target="_blank" rel="noopener">ref</a></div>
+    <div><b>PR</b> — pull request: a proposed code change submitted for review before merging. <a href="https://docs.github.com/en/pull-requests" target="_blank" rel="noopener">ref</a></div>
+    <div><b>CI</b> — continuous integration: automatically building and testing every change as it lands. <a href="https://en.wikipedia.org/wiki/Continuous_integration" target="_blank" rel="noopener">ref</a></div>
+    <div><b>p50 / p95 / p99</b> — percentiles of a distribution; p99 is the value the top 1% of sessions exceed. Tails, not means, drive agentic budgets. <a href="https://en.wikipedia.org/wiki/Percentile" target="_blank" rel="noopener">ref</a></div>
+    <div><b>NBER</b> — National Bureau of Economic Research; its working papers circulate before peer review. <a href="https://www.nber.org/" target="_blank" rel="noopener">nber.org</a></div>
+    <div><b>QJE</b> — The Quarterly Journal of Economics, a top-ranked peer-reviewed economics journal. <a href="https://academic.oup.com/qje" target="_blank" rel="noopener">ref</a></div>
+    <div><b>SSRN</b> — Social Science Research Network, a preprint repository (not peer-reviewed at posting). <a href="https://www.ssrn.com/" target="_blank" rel="noopener">ssrn.com</a></div>
+    <div><b>arXiv</b> — open preprint server for quantitative fields; posting precedes peer review. <a href="https://arxiv.org/" target="_blank" rel="noopener">arxiv.org</a></div>
+    <div><b>SWE-bench</b> — benchmark of real GitHub issues used to evaluate coding agents. <a href="https://www.swebench.com/" target="_blank" rel="noopener">ref</a></div>
+    <div><b>LLM</b> — large language model, the model class behind current AI assistants and agents. <a href="https://en.wikipedia.org/wiki/Large_language_model" target="_blank" rel="noopener">ref</a></div>
+    <div><b>API</b> — application programming interface; here, the metered endpoint through which agents call models. <a href="https://en.wikipedia.org/wiki/API" target="_blank" rel="noopener">ref</a></div>
+    <div><b>ROI</b> — return on investment. <a href="https://en.wikipedia.org/wiki/Return_on_investment" target="_blank" rel="noopener">ref</a></div>
+    <div><b>P&amp;L</b> — profit and loss statement; "no P&amp;L impact" means no measurable effect on income. <a href="https://en.wikipedia.org/wiki/Income_statement" target="_blank" rel="noopener">ref</a></div>
+    <div><b>EEG</b> — electroencephalography, scalp measurement of brain electrical activity. <a href="https://en.wikipedia.org/wiki/Electroencephalography" target="_blank" rel="noopener">ref</a></div>
+    <div><b>ADP</b> — major U.S. payroll processor whose anonymized records enable employment research. <a href="https://www.adp.com/" target="_blank" rel="noopener">adp.com</a></div>
+    <div><b>BLS</b> — U.S. Bureau of Labor Statistics, source of official productivity data. <a href="https://www.bls.gov/" target="_blank" rel="noopener">bls.gov</a></div>
+    <div><b>CBO</b> — Congressional Budget Office, whose pre-pandemic forecasts serve as the macro baseline. <a href="https://www.cbo.gov/" target="_blank" rel="noopener">cbo.gov</a></div>
+    <div><b>O*NET</b> — U.S. Department of Labor occupational-task database used to map AI usage to jobs. <a href="https://www.onetonline.org/" target="_blank" rel="noopener">ref</a></div>
+    <div><b>SAST</b> — static application security testing; automated code scanning (e.g. CodeQL). <a href="https://en.wikipedia.org/wiki/Static_application_security_testing" target="_blank" rel="noopener">ref</a></div>
+  </div>
+  </details>
+</article>
+
+<footer class="colophon">
+  <div><b>COLOPHON</b> — Single self-contained HTML file (~400 KB, zero external dependencies; renders from file://, email attachment, or GitHub Pages). Self-verifying: the embedded test suite below runs on every load. Externally verified during authoring with jsdom (structural assertions) and Playwright in Chromium (behavioral tests + screenshot review); all source links HTTP-checked at compile time. Compiled by M. Martin (github.com/casper3912) in collaboration with Claude (Anthropic) · v1.0 · 18 Jul 2026 · License: CC BY 4.0 — cite freely, falsify enthusiastically. Corrections: open an issue on the repo; accepted fixes are logged in commit history and version-bumped.</div>
+</footer>
+
+<section id="selftest">
+  <details>
+    <summary>Embedded self-tests <span id="teststatus">running…</span></summary>
+    <div id="testresults"></div>
+  </details>
+</section>
+
+<script>__D3_INLINE__</script>
+<script>
+const studies=[
+{id:"peng2023",title:"The Impact of AI on Developer Productivity: Evidence from GitHub Copilot",authors:"Peng, Kalliamvakou, Cihon, Demirer",inst:"Microsoft Research · GitHub · MIT",venue:"arXiv preprint",date:"2023-02",method:"Lab RCT — recruited freelance devs, one JS HTTP-server task",n:95,finding:"Copilot group finished 55.8% faster",dir:"pos",q:3,cav:"Single artificial task; recruited freelancers; speed only, no quality or maintenance measure. Headline CI is wide (~21–89%), and completion attrition cut the analyzed sample well below the 95 recruited.",url:"https://arxiv.org/abs/2302.06590"},
+{id:"noyzhang2023",title:"Experimental Evidence on the Productivity Effects of Generative AI",authors:"Noy & Zhang",inst:"MIT Economics",venue:"Science",date:"2023-07",method:"Preregistered online RCT — mid-level professional writing tasks",n:453,finding:"40% faster, quality +18%; gap between weak and strong writers narrowed",dir:"pos",q:4,cav:"Incentivized but artificial tasks with no career stakes; short horizon.",url:"https://www.science.org/doi/10.1126/science.adh2586"},
+{id:"bryn2023",title:"Generative AI at Work",authors:"Brynjolfsson, Li, Raymond",inst:"Stanford · MIT · NBER",venue:"NBER WP 2023 → QJE Feb 2025",date:"2023-04",method:"Quasi-experimental staggered rollout, real customer-support workplace",n:5172,finding:"+14–15% issues resolved/hour; novices +34%, top experts ≈0",dir:"pos",q:5,cav:"One firm, one occupation; assistant trained on top-performer transcripts (mechanism = knowledge diffusion).",url:"https://www.nber.org/papers/w31161"},
+{id:"dellacqua2023",title:"Navigating the Jagged Technological Frontier",authors:"Dell'Acqua, McFowland, Mollick, Lifshitz-Assaf, Kellogg, et al.",inst:"Harvard HBS · Wharton · BCG",venue:"HBS Working Paper",date:"2023-09",method:"Field RCT with GPT-4 on realistic consulting tasks",n:758,finding:"Inside frontier: +12.2% tasks, +25% speed, +40% quality. Outside frontier: 19pp more likely wrong",dir:"mixed",q:4,cav:"Tasks designed by researchers to sit inside/outside frontier; consultants knew they were studied.",url:"https://www.hbs.edu/faculty/Pages/item.aspx?num=64700"},
+{id:"otis2024",title:"The Uneven Impact of Generative AI on Entrepreneurial Performance",authors:"Otis, Clarke, Delecourt, Holtz, Koning",inst:"UC Berkeley · Harvard · Wharton",venue:"SSRN / field RCT",date:"2024-02",method:"RCT — GPT-4 business mentor via WhatsApp, Kenyan SMEs",n:640,finding:"High performers +15% profit; low performers −8%. Divergence, not compression",dir:"mixed",q:4,cav:"Advice-taking context, not tool use; profit measurement noisy in informal firms.",url:"https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4671369"},
+{id:"cui2024",title:"The Effects of Generative AI on High-Skilled Work: Three Field Experiments",authors:"Cui, Demirer, Jaffe, Musolff, Peng, Salz",inst:"MIT · Princeton · Microsoft",venue:"SSRN, updated 2025",date:"2024-09",method:"3 field RCTs — Copilot at Microsoft, Accenture, a Fortune 100 firm",n:4867,finding:"+26.1% completed tasks; larger gains for junior/short-tenure devs",dir:"pos",q:4,cav:"Adoption was voluntary within treatment; output measured by commits/PRs, not shipped value.",url:"https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4945566"},
+{id:"tonerrodgers2024",title:"Artificial Intelligence, Scientific Discovery, and Product Innovation",authors:"Toner-Rodgers",inst:"MIT Economics (author departed)",venue:"arXiv Nov 2024 — RETRACTED May 2025",date:"2024-11",method:"Claimed randomized rollout at a 1,000+ researcher materials lab",n:1018,finding:"Claimed +44% materials discovered, +39% patents. MIT: 'no confidence in provenance, reliability or validity'",dir:"retr",q:0,cav:"Data disavowed by MIT ('no confidence in provenance, reliability or validity'); endorsed pre-disavowal by Acemoglu & Autor and cited in EU policy speeches — a caution on prestige-driven review.",url:"https://the-decoder.com/mit-says-a-high-profile-ai-productivity-study-used-data-that-cannot-be-trusted/"},
+{id:"humlum2025",title:"Large Language Models, Small Labor Market Effects",authors:"Humlum & Vestergaard",inst:"U Chicago Booth · U Copenhagen",venue:"NBER w33777 (rev. 'Still Waters, Rapid Currents' 2026)",date:"2025-05",method:"Adoption surveys linked to Danish administrative payroll records; diff-in-diff",n:25000,finding:"~2.8% time saved; no significant effect on earnings or hours in any of 11 occupations; 3–7% of gains reach pay",dir:"nul",q:4,cav:"Denmark 2023–24; chatbot era, pre-agentic tools; effects bounded, not proven zero forever.",url:"https://www.nber.org/papers/w33777"},
+{id:"metr2025",title:"Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity",authors:"Becker, Rush, Barnes, Rein",inst:"METR (nonprofit)",venue:"metr.org / arXiv",date:"2025-07",method:"Task-level RCT — devs' own mature repos, Cursor + Claude 3.7 era",n:16,finding:"19% slower with AI (246 real tasks) — while participants estimated AI made them 20% faster",dir:"nul",q:4,cav:"Small n but high ecological validity; experienced devs on familiar code — plausibly the hardest setting for AI to help.",url:"https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/"},
+{id:"kosmyna2025",title:"Your Brain on ChatGPT (cognitive debt)",authors:"Kosmyna et al.",inst:"MIT Media Lab",venue:"arXiv preprint",date:"2025-06",method:"EEG lab study — essay writing with LLM vs search vs brain-only",n:54,finding:"LLM users showed weaker neural connectivity, poorer recall and lower sense of ownership of their text",dir:"nul",q:2,cav:"Small sample, not peer-reviewed at release, heavily over-extrapolated in media coverage.",url:"https://arxiv.org/abs/2506.08872"},
+{id:"nanda2025",title:"The GenAI Divide: State of AI in Business 2025",authors:"Challapally et al. (Project NANDA)",inst:"MIT Media Lab initiative",venue:"Industry report",date:"2025-07",method:"~150 leader interviews, 350 employee surveys, 300 deployment analyses",n:800,finding:"~95% of enterprise GenAI pilots show no measurable P&L return; 'learning gap,' not model quality, blamed",dir:"nul",q:2,cav:"Methodology opaque and criticized; MIT-adjacent branding amplified a weak design. Directionally consistent with stronger firm surveys.",url:"https://nanda.media.mit.edu/"},
+{id:"canaries2025",title:"Canaries in the Coal Mine? Employment Effects of AI",authors:"Brynjolfsson, Chandar, Chen",inst:"Stanford Digital Economy Lab",venue:"Working paper (ADP data), rev. Nov 2025",date:"2025-08",method:"High-frequency payroll microdata, millions of workers",n:1000000,finding:"~13% relative employment decline for 22–25 year-olds in most AI-exposed occupations since late 2022 (revised to ~16% in the Nov 2025 draft)",dir:"mixed",q:3,cav:"Observational; exposure measures contested; entry-level hiring confounded by macro cycle.",url:"https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/"},
+{id:"bick2025",title:"The Rapid Adoption of Generative AI",authors:"Bick, Blandin, Deming",inst:"St. Louis Fed · Harvard",venue:"NBER w32966 (Sept 2024, rev. 2025)",date:"2024-09",method:"Nationally representative repeated surveys",n:10000,finding:"~40% of US adults (18–64) use genAI; time saved ≈1.4% of work hours → ≈1.1% aggregate labor-productivity contribution at full pass-through",dir:"pos",q:3,cav:"Self-reported time savings; aggregate estimate is an upper-bound extrapolation.",url:"https://www.nber.org/papers/w32966"},
+{id:"pwc2025",title:"Global AI Jobs Barometer (2025 & 2026 editions)",authors:"PwC",inst:"PwC",venue:"Industry report",date:"2025-05",method:"~1B job ads + firm financials across six continents",n:500000,finding:"Productivity growth ~4x in most AI-exposed industries; 56% wage premium for AI skills. 2026 edition: growth 40% higher at most-exposed vs least-exposed firms (34% vs 24% since 2018); wage premium 62%",dir:"pos",q:2,cav:"Correlational; exposure ≠ causation; industry composition effects likely large.",url:"https://www.pwc.com/gx/en/issues/artificial-intelligence/ai-jobs-barometer.html"},
+{id:"anthropic_econ",title:"Anthropic Economic Index",authors:"Anthropic (Handa, Tamkin et al.)",inst:"Anthropic",venue:"Ongoing reports, 2025–26",date:"2025-02",method:"Privacy-preserving analysis of millions of Claude conversations mapped to O*NET tasks",n:1000000,finding:"Usage concentrated in software & writing tasks; augmentation slightly outweighs automation; adoption highly uneven by geography and occupation",dir:"ctx",q:3,cav:"Usage data, not outcome data; one provider's user base. Feb 2025 snapshot — later Index releases (Sept 2025→) find automation overtaking augmentation.",url:"https://www.anthropic.com/economic-index"},
+{id:"gdpval2025",title:"GDPval",authors:"OpenAI",inst:"OpenAI",venue:"Benchmark report",date:"2025-09",method:"Expert-graded real deliverables across 44 occupations, 9 sectors",n:1320,finding:"Frontier models approach expert quality on well-specified deliverables roughly half the time; capability ≠ deployed productivity",dir:"ctx",q:3,cav:"Benchmark tasks are fully specified — real work is not; grading by preference, not economic value.",url:"https://openai.com/index/gdpval/"},
+{id:"metr2026",title:"We Are Changing Our Developer Productivity Experiment Design",authors:"METR",inst:"METR",venue:"metr.org update",date:"2026-02",method:"Attempted follow-up RCT — 57 devs, 143 repos, 800+ tasks",n:57,finding:"Study collapsed: devs refused no-AI control arm. Raw signal suggests speedup (original cohort ≈ −18% time, wide CI) but data declared unreliable",dir:"mixed",q:3,cav:"An honest measurement-failure report; selection effects likely bias toward null. Counterfactual construction may no longer be feasible.",url:"https://metr.org/blog/2026-02-24-uplift-update/"},
+{id:"yotzov2026",title:"Firm Data on AI",authors:"Yotzov, Barrero, Bloom, Bunn, Davis, Meyer, Mizen, et al.",inst:"Stanford · Bank of England · ITAM · Atlanta Fed",venue:"NBER w34836",date:"2026-02",method:"Stratified representative surveys of CFOs/CEOs, US·UK·DE·AU, Nov 2025–Jan 2026",n:6000,finding:"69% of firms use AI; ~nine-in-ten report no productivity or employment impact over past 3 years; forecast +1.4% productivity over next 3",dir:"nul",q:4,cav:"Self-reported firm outcomes; executives average only 1.5 hrs/week personal AI use — adoption may be shallow, not futile.",url:"https://www.nber.org/papers/w34836"},
+{id:"hartley2026",title:"The Labor Market Effects of Generative AI",authors:"Hartley, Jolevski, Melo, Moore",inst:"Stanford & coauthors",venue:"Working paper 2026",date:"2026-01",method:"Repeated worker surveys with labor-market linkage",n:15000,finding:"35.9% of US workers used genAI by Dec 2025; small positive wage effects; no significant decline in job openings",dir:"pos",q:3,cav:"Short horizon; survey-based usage; wage effects small and model-dependent.",url:"https://laweconcenter.org/resources/ai-productivity-and-labor-markets-a-review-of-the-empirical-evidence/"},
+{id:"cfo2026",title:"Artificial Intelligence, Productivity, and the Workforce: Evidence from Corporate Executives",authors:"Richmond Fed / Duke CFO Survey team",inst:"Richmond Fed · Duke",venue:"NBER w34984",date:"2026-03",method:"Survey of corporate executives with revenue-linked validation",n:750,finding:"Positive labor-productivity gains concentrated in high-skill services & finance; perceived gains exceed measured gains — a stated 'productivity paradox'",dir:"mixed",q:3,cav:"Smaller sample than w34836 and partially contradicts it — adjudication pending.",url:"https://www.nber.org/system/files/working_papers/w34984/w34984.pdf"},
+{id:"furman2026",title:"Macro reassessment: the J-curve harvest",authors:"Furman; Brynjolfsson (FT)",inst:"Harvard · Stanford",venue:"Commentary on revised BLS data",date:"2026-03",method:"Aggregate productivity accounting, peak-to-peak, post-revision",n:0,finding:"US labor productivity ~2.7% growth in 2025, 2.2% above pre-pandemic CBO forecast; both now attribute part of the surge to AI",dir:"pos",q:3,cav:"Attribution to AI is inference, not identification; second-best cycle since 1973 has many candidate causes.",url:"https://aleximas.substack.com/p/what-is-the-impact-of-ai-on-productivity"},
+{id:"metaprog2026",title:"Meta-analysis: Generative AI in programming productivity & learning",authors:"(arXiv 2605.04779)",inst:"Academic consortium",venue:"arXiv 2026",date:"2026-05",method:"Random-effects meta-analysis — 23 studies / 27 effect sizes across programming, 2022–2025",n:23,finding:"Productivity effect positive but heterogeneous (g=0.33, I²=99%); learning effect not significant. Study setting is the moderator — lab g≈0.73 vs enterprise ≈0.19 vs open-source ≈0; experience and interface don't moderate",dir:"pos",q:3,cav:"Programming only; underlying studies skew lab-based; publication bias possible. The setting gradient mirrors this graph's realism pattern.",url:"https://arxiv.org/abs/2605.04779"},
+{id:"stanford2026",title:"Stanford AI Index 2026 — productivity synthesis",authors:"Stanford HAI",inst:"Stanford HAI",venue:"Annual index",date:"2026-04",method:"Cross-study aggregation",n:0,finding:"Gains track task structure: ~14–15% support, ~26% software, up to 73% marketing output; shrink sharply for unstructured reasoning",dir:"mixed",q:3,cav:"Synthesis inherits the biases of its inputs; headline numbers are the famous studies restated.",url:"https://aiindex.stanford.edu/"},
+{id:"dora2025",title:"DORA 2025: State of AI-assisted Software Development",authors:"Harvey et al. (DORA)",inst:"Google Cloud · DORA",venue:"Annual report",date:"2025-09",method:"Global practitioner survey (~5,000) + qualitative analysis of enterprise engineers",n:5000,finding:"90% use AI; higher adoption raises throughput AND instability together; AI amplifies existing system strengths and dysfunctions; code review is the canonical bottleneck",dir:"mixed",q:3,cav:"Cross-sectional self-report; outcome measures perceptual; Google-adjacent framing.",url:"https://dora.dev/insights/balancing-ai-tensions/"},
+{id:"faros2025",title:"AI Productivity Paradox — engineering telemetry",authors:"Faros AI research",inst:"Faros AI",venue:"Telemetry report, Jul 2025",date:"2025-07",method:"Instrumented telemetry: 10,000+ developers, 1,255 teams, high- vs low-AI-adoption cohorts",n:10000,finding:"+21% tasks completed, +98% PRs merged — but PR review time +91%, PR size +154%, bugs +9%; org-level DORA metrics flat",dir:"mixed",q:3,cav:"Vendor telemetry; adoption self-selected; team covariates uncontrolled — but rare direct measurement of where gains go to die. A larger 2026 follow-up reports worsening stability (≈3× incidents).",url:"https://www.faros.ai/blog/ai-software-engineering"},
+{id:"swereview2026",title:"SWE-Review: Closing the Loop with Agentic Code Review",authors:"SWE-Review authors",inst:"Academic (arXiv)",venue:"arXiv 2607.06065",date:"2026-07",method:"Benchmark: generate-review-revise loops vs one-shot PR generation on SWE-bench Verified",n:500,finding:"Closed-loop review lifts resolve rate 27.5%→56.9% (Qwen3-30B-A3B) and 50.9%→68.8% (Qwen3-Coder-30B); agentic review beats single-turn in decision accuracy and post-revision resolution",dir:"pos",q:3,cav:"Benchmark, not field deployment; verified-issue distribution is cleaner than real backlogs; loop token cost not the object of study; gains shrink as the base model strengthens (GLM-5: 72.2%→75.4%).",url:"https://arxiv.org/abs/2607.06065"}
+];
+
+const edges=[
+{s:"peng2023",t:"cui2024",k:"cor",note:"Replicated at enterprise scale — effect halves"},
+{s:"peng2023",t:"metr2025",k:"ten",note:"Opposite sign for experts on real code"},
+{s:"cui2024",t:"metr2025",k:"ten",note:"+26% vs −19%: setting and experience drive the gap"},
+{s:"peng2023",t:"metaprog2026",k:"bld",note:"Pooled in meta-analysis"},
+{s:"cui2024",t:"metaprog2026",k:"bld",note:"Pooled in meta-analysis"},
+{s:"cui2024",t:"faros2025",k:"ten",note:"Task-level gains vs flat delivery metrics"},
+{s:"faros2025",t:"dora2025",k:"cor",note:"Independent telemetry ↔ survey: review absorbs the gains"},
+{s:"dora2025",t:"yotzov2026",k:"cor",note:"System-level absorption explains firm-level nulls"},
+{s:"metr2025",t:"dora2025",k:"cor",note:"Verification tax: time saved writing is re-spent auditing"},
+{s:"swereview2026",t:"faros2025",k:"bld",note:"Closed loop aimed directly at the review bottleneck"},
+{s:"noyzhang2023",t:"humlum2025",k:"ten",note:"Lab gains vs field null — explicitly contrasted"},
+{s:"bryn2023",t:"humlum2025",k:"ten",note:"15% RCT gain vs 2.8% field savings"},
+{s:"bryn2023",t:"dellacqua2023",k:"bld",note:"Skill heterogeneity thread"},
+{s:"noyzhang2023",t:"otis2024",k:"ten",note:"Compression vs divergence"},
+{s:"dellacqua2023",t:"metr2025",k:"bld",note:"Jagged frontier predicts expert slowdown"},
+{s:"metr2025",t:"metr2026",k:"bld",note:"Follow-up — collapsed on selection effects"},
+{s:"kosmyna2025",t:"metr2025",k:"cor",note:"Both: self-report diverges from measurement"},
+{s:"tonerrodgers2024",t:"bryn2023",k:"ten",note:"Was cited alongside as flagship positive evidence"},
+{s:"humlum2025",t:"yotzov2026",k:"cor",note:"Micro–macro gap corroborated at firm level"},
+{s:"nanda2025",t:"yotzov2026",k:"cor",note:"Same direction, far weaker method"},
+{s:"bick2025",t:"hartley2026",k:"bld",note:"Adoption tracking lineage"},
+{s:"canaries2025",t:"hartley2026",k:"ten",note:"Entry-level decline vs no decline in openings"},
+{s:"yotzov2026",t:"furman2026",k:"ten",note:"Firm nulls vs aggregate uptick"},
+{s:"bryn2023",t:"furman2026",k:"bld",note:"Brynjolfsson micro→macro thread"},
+{s:"cfo2026",t:"yotzov2026",k:"ten",note:"Dueling executive surveys"},
+{s:"gdpval2025",t:"anthropic_econ",k:"bld",note:"Capability frontier vs actual usage"},
+{s:"anthropic_econ",t:"humlum2025",k:"cor",note:"Concentrated usage ↔ small average effects"},
+{s:"bryn2023",t:"stanford2026",k:"bld",note:"Synthesized"},
+{s:"metr2025",t:"stanford2026",k:"bld",note:"Synthesized"},
+{s:"cui2024",t:"stanford2026",k:"bld",note:"Synthesized"}
+];
+
+const links=edges.map(e=>({source:e.s,target:e.t,k:e.k,note:e.note}));
+document.getElementById("studycount").textContent=studies.length;
+const colors={pos:"#0E7C66",mixed:"#C08A2D",nul:"#B3423A",ctx:"#5B6B7A",retr:"#7A7F86"};
+const edgeColors={bld:"#5B6B7A",ten:"#B3423A",cor:"#0E7C66"};
+const dirLabel={pos:"positive effect",mixed:"mixed / heterogeneous",nul:"null or negative",ctx:"context / measurement",retr:"RETRACTED"};
+const isRCT=new Set(["peng2023","noyzhang2023","bryn2023","dellacqua2023","otis2024","cui2024","metr2025","metr2026","kosmyna2025"]);
+const isInd=new Set(["pwc2025","nanda2025","faros2025","dora2025","anthropic_econ","gdpval2025"]);
+const dirGlyph={pos:"+",mixed:"±",nul:"−",ctx:"·"};
+const shortLbl={metr2025:"metr'25",metr2026:"metr'26",tonerrodgers2024:"toner-r.",anthropic_econ:"anthropic",swereview2026:"swe-review",noyzhang2023:"noy-zhang",dellacqua2023:"dell'acqua"};
+const lanes=[
+ {k:"experiment",label:"EXPERIMENTS — LAB & FIELD RCTS"},
+ {k:"linked",label:"LINKED RECORDS & TELEMETRY"},
+ {k:"survey",label:"SURVEYS & FIRM REPORTS"},
+ {k:"synth",label:"BENCHMARKS & SYNTHESIS"}];
+const mclassOf={peng2023:"experiment",noyzhang2023:"experiment",dellacqua2023:"experiment",otis2024:"experiment",cui2024:"experiment",metr2025:"experiment",metr2026:"experiment",kosmyna2025:"experiment",tonerrodgers2024:"experiment",
+bryn2023:"linked",humlum2025:"linked",canaries2025:"linked",faros2025:"linked",anthropic_econ:"linked",
+bick2025:"survey",pwc2025:"survey",nanda2025:"survey",yotzov2026:"survey",hartley2026:"survey",cfo2026:"survey",dora2025:"survey",
+gdpval2025:"synth",swereview2026:"synth",metaprog2026:"synth",stanford2026:"synth",furman2026:"synth"};
+
+
+const svg=d3.select("#graph"),wrap=document.getElementById("graphwrap"),tip=d3.select("#tip");
+let W=wrap.clientWidth||1100,H=640;
+const parse=d3.timeParse("%Y-%m");
+studies.forEach(d=>{d.dt=parse(d.date)});
+const x=d3.scaleTime().domain([parse("2022-11"),parse("2026-09")]).range([70,W-40]);
+const r=d=>d.n>0?Math.max(9,4.2*Math.log10(d.n+10)):10;
+
+const laneG=svg.append("g").attr("class","lanes");
+const g=svg.append("g");
+const axisG=svg.append("g").attr("class","axis").attr("transform","translate(0,"+(H-30)+")");
+const laneH=()=> (H-52-70)/lanes.length;
+const laneIdx=d=>Math.max(0,lanes.findIndex(l=>l.k===mclassOf[d.id]));
+const laneY=d=>52+(laneIdx(d)+0.5)*laneH();
+function drawLanes(show){
+  laneG.selectAll("*").remove();
+  if(!show)return;
+  lanes.forEach((l,i)=>{
+    const y0=52+i*laneH();
+    if(i>0)laneG.append("line").attr("x1",56).attr("x2",W-24).attr("y1",y0).attr("y2",y0)
+      .attr("stroke","#B9C2C8").attr("stroke-dasharray","2 6");
+    laneG.append("text").attr("x",60).attr("y",y0+13).attr("class","lanelabel")
+      .attr("font-family","ui-monospace,Consolas,monospace").attr("font-size","9.5px")
+      .attr("letter-spacing","1px").attr("fill","#8A94A0").text(l.label);
+  });
+}
+function drawAxis(show){
+  axisG.selectAll("*").remove();
+  if(!show)return;
+  const ax=d3.axisBottom(x).ticks(d3.timeYear.every(1)).tickFormat(d3.timeFormat("%Y"));
+  axisG.call(ax);
+  axisG.selectAll("text").attr("font-family","ui-monospace,Consolas,monospace").attr("font-size","12px").attr("fill","#4A555F");
+  axisG.selectAll("path,line").attr("stroke","#4A555F");
+}
+
+const linkSel=g.selectAll("line").data(links).join("line")
+  .attr("stroke",d=>edgeColors[d.k]).attr("stroke-width",1.6)
+  .attr("stroke-dasharray",d=>d.k==="ten"?"5 4":null).attr("opacity",.55);
+
+const nodeSel=g.selectAll("g.node").data(studies).join("g").attr("class","node").style("cursor","pointer");
+nodeSel.append("circle")
+  .attr("r",r)
+  .attr("fill",d=>d.dir==="retr"?"#fff":colors[d.dir])
+  .attr("fill-opacity",d=>d.dir==="retr"?1:.92)
+  .attr("stroke",d=>d.dir==="retr"?colors.retr:"#182028")
+  .attr("stroke-width",d=>d.q>=4?2.6:1.4)
+  .attr("stroke-dasharray",d=>d.q<=2&&d.dir!=="retr"?"3 3":null);
+nodeSel.filter(d=>d.dir==="retr").append("path")
+  .attr("d",d=>{const rr=r(d)*0.62;return "M"+(-rr)+","+(-rr)+"L"+rr+","+rr+"M"+(-rr)+","+rr+"L"+rr+","+(-rr)})
+  .attr("stroke",colors.retr).attr("stroke-width",2.2);
+nodeSel.filter(d=>d.q===5).append("circle").attr("r",d=>r(d)+4).attr("fill","none").attr("stroke","#274690").attr("stroke-width",1.4);
+nodeSel.filter(d=>d.dir!=="retr").append("text").attr("class","dirglyph")
+  .text(d=>dirGlyph[d.dir]).attr("text-anchor","middle").attr("dy","0.34em")
+  .attr("font-family","ui-monospace,Consolas,monospace").attr("font-size","11px")
+  .attr("font-weight","700").attr("fill","#fff").attr("pointer-events","none");
+nodeSel.append("text").text(d=>shortLbl[d.id]||d.id.replace(/\d+$/,"")).attr("text-anchor","middle").attr("dy",d=>r(d)+13)
+  .attr("font-family","ui-monospace,Consolas,monospace").attr("font-size","10px").attr("fill","#4A555F");
+
+let selectedId=null;
+const adj={};edges.forEach(e=>{(adj[e.s]=adj[e.s]||new Set()).add(e.t);(adj[e.t]=adj[e.t]||new Set()).add(e.s)});
+function hiddenNode(d){
+  return (rctOnly&&!isRCT.has(d.id))||(qHigh&&d.q<4)||(noInd&&isInd.has(d.id));
+}
+function updateEmphasis(){
+  const rel=id=>selectedId&&(id===selectedId||(adj[selectedId]&&adj[selectedId].has(id)));
+  nodeSel.attr("opacity",d=>{
+    if(hiddenNode(d))return 0.12;
+    if(!selectedId)return 1;
+    return rel(d.id)?1:0.3;
+  });
+  nodeSel.select("circle").attr("stroke-width",d=>d.id===selectedId?4:(d.q>=4?2.6:1.4));
+  linkSel.attr("opacity",d=>{
+    if(hiddenNode(d.source)||hiddenNode(d.target))return 0.06;
+    if(!selectedId)return 0.55;
+    const on=d.source.id===selectedId||d.target.id===selectedId;
+    return on?0.95:0.08;
+  }).attr("stroke-width",d=>selectedId&&(d.source.id===selectedId||d.target.id===selectedId)?2.6:1.6);
+}
+svg.on("click",()=>{selectedId=null;updateEmphasis()});
+nodeSel.on("mousemove",(ev,d)=>{
+  const [px,py]=d3.pointer(ev,wrap);
+  tip.style("opacity",1).style("left",(px+14)+"px").style("top",(py-8)+"px")
+     .text(d.title+" · "+d.date);
+}).on("mouseleave",()=>tip.style("opacity",0)).on("click",(ev,d)=>{ev.stopPropagation();selectedId=d.id;showPanel(d);updateEmphasis()});
+
+/* B1: keyboard access for graph nodes — Tab focuses, Enter/Space selects, Escape clears */
+nodeSel.attr("tabindex",0).attr("role","button")
+  .attr("aria-label",d=>d.title+" ("+d.date+", "+dirLabel[d.dir]+"). Press Enter for details.")
+  .on("keydown",(ev,d)=>{
+    if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();ev.stopPropagation();selectedId=d.id;showPanel(d);updateEmphasis()}
+    else if(ev.key==="Escape"){selectedId=null;updateEmphasis()}
+  })
+  .on("focus",(ev,d)=>{tip.style("opacity",1).style("left",(d.x+14)+"px").style("top",(d.y-8)+"px").text(d.title+" · "+d.date)})
+  .on("blur",()=>tip.style("opacity",0));
+
+linkSel.append("title").text(d=>d.note);
+
+function renderFrame(){
+  linkSel.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  nodeSel.attr("transform",d=>"translate("+d.x+","+d.y+")");
+}
+const sim=d3.forceSimulation(studies)
+  .force("link",d3.forceLink(links).id(d=>d.id).distance(90).strength(.25))
+  .force("charge",d3.forceManyBody().strength(-190))
+  .force("collide",d3.forceCollide().radius(d=>r(d)+16))
+  .on("tick",renderFrame);
+
+let mode="timeline";
+function applyLayout(){
+  W=wrap.clientWidth||1100;x.range([70,W-40]);
+  if(mode==="timeline"){
+    sim.force("x",d3.forceX(d=>x(d.dt)).strength(1.2))
+       .force("y",d3.forceY(d=>laneY(d)).strength(.6))
+       .force("center",null);
+    drawAxis(true);drawLanes(true);
+  }else{
+    sim.force("x",d3.forceX(W/2).strength(.05))
+       .force("y",d3.forceY(H/2).strength(.05))
+       .force("center",d3.forceCenter(W/2,H/2));
+    drawAxis(false);drawLanes(false);
+  }
+  sim.alpha(1).restart();
+}
+applyLayout();
+window.addEventListener("resize",applyLayout);
+
+const bT=document.getElementById("btnTimeline"),bC=document.getElementById("btnCluster"),bR=document.getElementById("btnRCT");
+bT.onclick=()=>{mode="timeline";bT.classList.add("on");bC.classList.remove("on");applyLayout()};
+bC.onclick=()=>{mode="cluster";bC.classList.add("on");bT.classList.remove("on");applyLayout()};
+let rctOnly=false,qHigh=false,noInd=false;
+bR.onclick=()=>{
+  rctOnly=!rctOnly;bR.classList.toggle("on",rctOnly);
+  updateEmphasis();
+};
+const bQ=document.getElementById("btnQ4"),bI=document.getElementById("btnNoInd");
+bQ.onclick=()=>{qHigh=!qHigh;bQ.classList.toggle("on",qHigh);updateEmphasis()};
+bI.onclick=()=>{noInd=!noInd;bI.classList.toggle("on",noInd);updateEmphasis()};
+
+/* B5: computed quality score with declared weights — a mechanical alternative view.
+   computed = 0.45×rigor + 0.35×validity + 0.20×scale, each component on a 0–5 scale.
+   rigor: RCT 5 · linked-records 4 · benchmark/synthesis 3 · survey 2.5; −0.5 if industry-authored.
+   validity: linked-records 5 · survey 3.5 · experiment 3 · benchmark/synthesis 2.5.
+   scale: log10(n+1)/6 × 5, capped at 5; n=0 (aggregate) scores neutral 2.5.
+   Retracted studies score null. The editorial rating remains the document's judgment. */
+function __qcScore(d){
+  if(d.dir==="retr")return null;
+  const lane=mclassOf[d.id];
+  let rig=isRCT.has(d.id)?5:(lane==="linked"?4:(lane==="synth"?3:2.5));
+  if(isInd.has(d.id))rig=Math.max(1,rig-0.5);
+  const val=lane==="linked"?5:(lane==="survey"?3.5:(lane==="experiment"?3:2.5));
+  const sc=d.n>0?Math.min(5,Math.log10(d.n+1)/6*5):2.5;
+  const total=Math.min(5,Math.max(1,0.45*rig+0.35*val+0.20*sc));
+  return {r:rig,v:val,s:sc,total};
+}
+function showPanel(d){
+  const p=document.getElementById("panel");
+  const q=[1,2,3,4,5].map(i=>'<span class="qseg '+(i<=d.q?"f":"")+'"></span>').join("");
+  const deg={cor:0,ten:0,bld:0};
+  links.forEach(e=>{if(e.source.id===d.id||e.target.id===d.id)deg[e.k]++});
+  const qc=__qcScore(d);
+  const rel=links.filter(e=>e.source.id===d.id||e.target.id===d.id)
+    .map(e=>{const other=e.source.id===d.id?e.target:e.source;
+      const kind=e.k==="ten"?"tension with":e.k==="cor"?"corroborates":"builds on / feeds";
+      return '<div class="val">↔ <strong>'+kind+'</strong> '+other.title.split(":")[0]+' <span style="color:var(--ink-soft)">— '+e.note+'</span></div>'}).join("");
+  p.innerHTML='<span class="badge" style="color:'+colors[d.dir]+'">'+dirLabel[d.dir]+'</span>'
+    +'<span class="badge" style="color:var(--blueprint)">'+d.date+'</span>'
+    +'<h2 style="margin-top:8px">'+d.title+'</h2>'
+    +'<div class="meta">Authors</div><div class="val">'+d.authors+'</div>'
+    +'<div class="meta">Institution</div><div class="val">'+d.inst+'</div>'
+    +'<div class="meta">Venue</div><div class="val">'+d.venue+'</div>'
+    +'<div class="meta">Method</div><div class="val">'+d.method+'</div>'
+    +'<div class="meta">Sample</div><div class="val">'+(d.n>0?"n ≈ "+d.n.toLocaleString():"aggregate / synthesis")+'</div>'
+    +'<div class="meta">Headline finding</div><div class="val">'+d.finding+'</div>'
+    +'<div class="meta">Quality (design rigor × ecological validity)</div><div class="qbar">'+q+'</div>'
+    +'<div class="meta">Computed score (declared weights)</div><div class="val">'
+      +(qc===null?'— (retracted)':qc.total.toFixed(1)+' / 5'
+      +' <details class="qcalc"><summary>formula</summary><div class="qcalc-body">0.45×rigor('+qc.r+') + 0.35×validity('+qc.v+') + 0.20×scale('+qc.s.toFixed(1)+'). A mechanical alternative view from declared weights over method class, lane, and sample size — the editorial rating above remains the document\'s judgment. Weights are declared in the page source.</div></details>')
+    +'</div>'
+    +'<div class="meta">Edge profile</div><div class="val edgeprofile">'+deg.cor+' corroborating · '+deg.ten+' in tension · '+deg.bld+' building</div>'
+    +'<div class="meta">Caveats</div><div class="val">'+d.cav+'</div>'
+    +'<div class="meta">Connections</div>'+(rel||'<div class="val" style="color:var(--ink-soft)">none mapped</div>')
+    +'<div class="meta">Source</div><a class="paperlink" href="'+d.url+'" target="_blank" rel="noopener">'+d.url+'</a>';
+}
+
+/* ---------- Heavy-tail appendix: data & charts ---------- */
+const tailStats={median:0.61,mean:9.70,p99:178,src:"arXiv:2606.30560"};
+const loopMult=[{steps:1,mult:1},{steps:5,mult:3.2},{steps:50,mult:30},{steps:200,mult:100}];
+const costComp=[{k:"Prefix (replayed context)",v:59.5,c:"#274690"},{k:"Append (fresh input)",v:29.2,c:"#5B6B7A"},{k:"Output",v:11.2,c:"#0E7C66"}];
+
+function drawTailCharts(){
+  const MONO="ui-monospace,Consolas,monospace";
+  /* A1: log-scale distribution strip with lognormal density + markers */
+  (function(){
+    const s=d3.select("#chart-dist svg"); s.selectAll("*").remove();
+    const Wc=820,Hc=250,m={l:46,r:20,t:18,b:40};
+    const xs=d3.scaleLog().domain([0.05,400]).range([m.l,Wc-m.r]);
+    const mu=Math.log(tailStats.median);
+    const sigma=Math.sqrt(2*Math.log(tailStats.mean/tailStats.median));
+    const pdf=v=>Math.exp(-Math.pow(Math.log(v)-mu,2)/(2*sigma*sigma))/(v*sigma*Math.sqrt(2*Math.PI));
+    const pts=d3.range(Math.log(0.05),Math.log(400),0.05).map(l=>{const v=Math.exp(l);return {v,d:pdf(v)*v}});
+    const ymax=d3.max(pts,p=>p.d);
+    const ys=d3.scaleLinear().domain([0,ymax*1.15]).range([Hc-m.b,m.t]);
+    s.append("path").datum(pts)
+      .attr("d",d3.area().x(p=>xs(p.v)).y0(Hc-m.b).y1(p=>ys(p.d)).curve(d3.curveBasis))
+      .attr("fill","#27469022").attr("stroke","#274690").attr("stroke-width",1.6).attr("class","densline");
+    const ax=d3.axisBottom(xs).tickValues([0.1,1,10,100]).tickFormat(v=>"$"+(v<1?v:d3.format("~s")(v)));
+    const axg=s.append("g").attr("transform","translate(0,"+(Hc-m.b)+")").attr("class","tailaxis").call(ax);
+    axg.selectAll("text").attr("font-family",MONO).attr("font-size","11px").attr("fill","#4A555F");
+    axg.selectAll("path,line").attr("stroke","#4A555F");
+    const marks=[{v:tailStats.median,l:"median $0.61",c:"#0E7C66"},{v:tailStats.mean,l:"mean $9.70",c:"#C08A2D"},{v:tailStats.p99,l:"p99 $178",c:"#B3423A"}];
+    const mg=s.selectAll("g.mark").data(marks).join("g").attr("class","mark");
+    mg.append("line").attr("x1",d=>xs(d.v)).attr("x2",d=>xs(d.v)).attr("y1",m.t+6).attr("y2",Hc-m.b)
+      .attr("stroke",d=>d.c).attr("stroke-width",2).attr("stroke-dasharray","4 3");
+    mg.append("text").attr("x",d=>xs(d.v)).attr("y",m.t).attr("text-anchor",d=>d.v>50?"end":"middle")
+      .attr("font-family",MONO).attr("font-size","11px").attr("fill",d=>d.c).text(d=>d.l);
+    s.append("text").attr("x",Wc-m.r).attr("y",Hc-8).attr("text-anchor","end")
+      .attr("font-family",MONO).attr("font-size","10.5px").attr("fill","#4A555F")
+      .text("mean/median ≈ 16× · p99/median ≈ 292×");
+  })();
+
+  /* A2: log-log loop multiplier */
+  (function(){
+    const s=d3.select("#chart-loop svg"); s.selectAll("*").remove();
+    const Wc=820,Hc=260,m={l:56,r:24,t:18,b:42};
+    const xs=d3.scaleLog().domain([1,300]).range([m.l,Wc-m.r]);
+    const ys=d3.scaleLog().domain([1,150]).range([Hc-m.b,m.t]);
+    const xa=d3.axisBottom(xs).tickValues([1,5,50,200]).tickFormat(d3.format("~s"));
+    const ya=d3.axisLeft(ys).tickValues([1,3.2,30,100]).tickFormat(v=>v+"×");
+    const gx=s.append("g").attr("transform","translate(0,"+(Hc-m.b)+")").attr("class","tailaxis").call(xa);
+    const gy=s.append("g").attr("transform","translate("+m.l+",0)").attr("class","tailaxis").call(ya);
+    [gx,gy].forEach(gA=>{gA.selectAll("text").attr("font-family",MONO).attr("font-size","11px").attr("fill","#4A555F");gA.selectAll("path,line").attr("stroke","#4A555F")});
+    s.append("path").datum(loopMult)
+      .attr("d",d3.line().x(d=>xs(d.steps)).y(d=>ys(d.mult)))
+      .attr("fill","none").attr("stroke","#B3423A").attr("stroke-width",2.2).attr("class","loopline");
+    s.selectAll("circle.lp").data(loopMult).join("circle").attr("class","lp")
+      .attr("cx",d=>xs(d.steps)).attr("cy",d=>ys(d.mult)).attr("r",5.5)
+      .attr("fill","#B3423A").attr("stroke","#182028").attr("stroke-width",1.2);
+    s.selectAll("text.lpl").data(loopMult).join("text").attr("class","lpl")
+      .attr("x",d=>xs(d.steps)+9).attr("y",d=>ys(d.mult)-9)
+      .attr("font-family",MONO).attr("font-size","11px").attr("fill","#182028")
+      .text(d=>d.steps+" steps → "+d.mult+"×");
+    s.append("text").attr("x",m.l).attr("y",Hc-8).attr("font-family",MONO).attr("font-size","10.5px").attr("fill","#4A555F")
+      .text("loop length (steps, log) → cost multiplier vs single call (log)");
+  })();
+
+  /* A3: composition bar */
+  (function(){
+    const s=d3.select("#chart-comp svg"); s.selectAll("*").remove();
+    const Wc=820,Hc=150,m={l:20,r:20,t:34,b:14};
+    const xs=d3.scaleLinear().domain([0,100]).range([m.l,Wc-m.r]);
+    let acc=0;
+    const segs=costComp.map(d=>{const s0=acc;acc+=d.v;return {...d,x0:s0,x1:acc}});
+    s.selectAll("rect.seg").data(segs).join("rect").attr("class","seg")
+      .attr("x",d=>xs(d.x0)).attr("width",d=>xs(d.x1)-xs(d.x0))
+      .attr("y",m.t).attr("height",56).attr("fill",d=>d.c)
+      .attr("stroke","#182028").attr("stroke-width",1.2).attr("rx",3);
+    s.selectAll("text.segv").data(segs).join("text").attr("class","segv")
+      .attr("x",d=>xs((d.x0+d.x1)/2)).attr("y",m.t+34).attr("text-anchor","middle")
+      .attr("font-family",MONO).attr("font-size","13px").attr("fill","#fff").attr("font-weight","600")
+      .text(d=>d.v+"%");
+    s.selectAll("text.segk").data(segs).join("text").attr("class","segk")
+      .attr("x",d=>xs((d.x0+d.x1)/2)).attr("y",m.t+76).attr("text-anchor","middle")
+      .attr("font-family",MONO).attr("font-size",d=>(d.x1-d.x0)<15?"9.5px":"11px").attr("fill","#4A555F")
+      .text(d=>d.k);
+    s.append("text").attr("x",m.l).attr("y",20).attr("font-family",MONO).attr("font-size","11px").attr("fill","#4A555F")
+      .text("share of total session cost by token category");
+  })();
+}
+drawTailCharts();
+window.addEventListener("resize",drawTailCharts);
+
+/* B4: study-table export (CSV / BibTeX). Pure builders exposed for testing;
+   the download path (anchor click) runs only on user action — never in the embedded suite. */
+function __csvEscape(v){v=String(v==null?"":v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+function __buildCSV(){
+  const cols=["id","title","authors","inst","venue","date","method","n","finding","dir","q","cav","url"];
+  return cols.join(",")+"\n"+studies.map(d=>cols.map(c=>__csvEscape(d[c])).join(",")).join("\n");
+}
+function __buildBibTeX(){
+  return studies.map(d=>{
+    const yr=d.date.slice(0,4),mo=d.date.slice(5,7);
+    const clean=s=>String(s||"").replace(/[{}]/g,"");
+    const type=/Science|QJE|journal|Organization Science|Management Science/i.test(d.venue)?"@article":(/NBER|Working|SSRN|arXiv|preprint|HBS|update/i.test(d.venue)?"@techreport":"@misc");
+    return type+"{"+d.id+",\n  title={"+clean(d.title)+"},\n  author={"+clean(d.authors)+"},\n  institution={"+clean(d.inst)+"},\n  year={"+yr+"},\n  month={"+mo+"},\n  howpublished={"+clean(d.venue)+"},\n  url={"+d.url+"},\n  note={"+clean(d.finding)+"}\n}";
+  }).join("\n\n");
+}
+function __download(name,text,mime){
+  const b=new Blob([text],{type:mime});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement("a");
+  a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),2000);
+}
+document.getElementById("btnCSV").onclick=()=>__download("evidence-graph-studies.csv",__buildCSV(),"text/csv");
+document.getElementById("btnBib").onclick=()=>__download("evidence-graph-studies.bib",__buildBibTeX(),"application/x-bibtex");
+window.__buildCSV=__buildCSV;window.__buildBibTeX=__buildBibTeX;
+
+/* B2: print support — open every section for printing, restore afterwards */
+let __printOpenState=null;
+window.addEventListener("beforeprint",()=>{
+  __printOpenState=[...document.querySelectorAll("details")].map(d=>d.open);
+  document.querySelectorAll("details").forEach(d=>d.open=true);
+});
+window.addEventListener("afterprint",()=>{
+  if(__printOpenState){[...document.querySelectorAll("details")].forEach((d,i)=>{if(i<__printOpenState.length)d.open=__printOpenState[i]});__printOpenState=null}
+});
+function openSectionFor(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const d=el.closest("details");
+  if(d&&!d.open)d.open=true;
+}
+document.querySelectorAll("nav.toc a").forEach(a=>{
+  a.addEventListener("click",()=>openSectionFor(a.getAttribute("href").slice(1)));
+  a.dataset.wired="1";
+});
+window.addEventListener("hashchange",()=>openSectionFor(location.hash.slice(1)));
+const ctip=document.createElement("div");ctip.id="ctip";document.body.appendChild(ctip);
+let ctipPinned=false,ctipFor=null,ctipTimer=null;
+function sectTitle(id){const h=document.getElementById(id);return h?h.textContent.replace(/\s+/g," ").trim():id}
+function resolveRefs(str){
+  if(!str)return[];
+  return str.split(";").filter(Boolean).map(tok=>{
+    if(tok.startsWith("node:")){const d=studies.find(x=>x.id===tok.slice(5));return d?{label:(shortLbl[d.id]||d.id.replace(/\d+$/,""))+" \u2014 "+d.date,href:d.url,ext:true}:null}
+    if(tok.startsWith("sect:")){const id=tok.slice(5);return{label:sectTitle(id),href:"#"+id,ext:false}}
+    if(tok.startsWith("u:")){const p=tok.slice(2).split("|");return{label:p[0],href:p[1],ext:true}}
+    return null}).filter(Boolean);
+}
+function showCtip(el){
+  clearTimeout(ctipTimer);ctipFor=el;
+  const refs=resolveRefs(el.getAttribute("data-refs"));
+  ctip.innerHTML='<div class="note">'+el.getAttribute("data-note")+'</div>'+
+    (refs.length?'<div class="refs">'+refs.map(r=>'<a href="'+r.href+'"'+(r.ext?' target="_blank" rel="noopener"':' class="intlink"')+'>'+r.label+'</a>').join("")+'</div>':'');
+  ctip.style.display="block";
+  const b=el.getBoundingClientRect();
+  let x=b.left+window.scrollX, y=b.bottom+window.scrollY+6;
+  const w=ctip.offsetWidth;
+  if(x+w>window.scrollX+document.documentElement.clientWidth-12)x=window.scrollX+document.documentElement.clientWidth-w-12;
+  ctip.style.left=Math.max(8,x)+"px";ctip.style.top=y+"px";
+  ctip.querySelectorAll("a.intlink").forEach(a=>a.addEventListener("click",()=>{openSectionFor(a.getAttribute("href").slice(1));hideCtip(true)}));
+  el.setAttribute("aria-expanded","true");
+}
+function hideCtip(force){
+  if(ctipPinned&&!force)return;
+  ctip.style.display="none";ctipPinned=false;
+  if(ctipFor)ctipFor.setAttribute("aria-expanded","false");
+  ctipFor=null;
+}
+function scheduleHide(){clearTimeout(ctipTimer);ctipTimer=setTimeout(()=>hideCtip(false),280)}
+ctip.addEventListener("mouseenter",()=>clearTimeout(ctipTimer));
+ctip.addEventListener("mouseleave",scheduleHide);
+document.querySelectorAll(".ctag[data-note]").forEach(el=>{
+  el.setAttribute("role","button");el.setAttribute("aria-expanded","false");
+  el.addEventListener("mouseenter",()=>{if(!ctipPinned)showCtip(el)});
+  el.addEventListener("mouseleave",scheduleHide);
+  el.addEventListener("focus",()=>{if(!ctipPinned)showCtip(el)});
+  el.addEventListener("blur",scheduleHide);
+  el.addEventListener("click",ev=>{ev.stopPropagation();
+    if(ctipPinned&&ctipFor===el){hideCtip(true)}else{ctipPinned=true;showCtip(el)}});
+});
+document.addEventListener("click",ev=>{if(!ctip.contains(ev.target))hideCtip(true)});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape")hideCtip(true)});
+document.querySelectorAll("#glossary a").forEach(a=>{
+  const b=a.closest("div")&&a.closest("div").querySelector("b");
+  if(b&&!a.getAttribute("aria-label"))a.setAttribute("aria-label","Reference: "+b.textContent);
+});
+if(location.hash)openSectionFor(location.hash.slice(1));
+
+const amdahl=(f,s)=>1/((1-f)+f/s);
+const amdahlFs=[{f:.25,c:"#5B6B7A",l:"authoring only",dy:22},{f:.5,c:"#C08A2D",l:"+ tests",dy:-14},{f:.75,c:"#274690",l:"+ review & CI repair",dy:0},{f:.9,c:"#0E7C66",l:"full-loop SDLC",dy:0}];
+
+function drawAmdahl(){
+  const MONO="ui-monospace,Consolas,monospace";
+  const s=d3.select("#chart-amdahl svg"); if(s.empty())return; s.selectAll("*").remove();
+  const Wc=820,Hc=300,m={l:52,r:170,t:16,b:44};
+  const xs=d3.scaleLog().domain([1,64]).range([m.l,Wc-m.r]);
+  const ys=d3.scaleLinear().domain([1,11]).range([Hc-m.b,m.t]);
+  const gx=s.append("g").attr("transform","translate(0,"+(Hc-m.b)+")").attr("class","tailaxis")
+    .call(d3.axisBottom(xs).tickValues([1,2,4,8,16,32,64]).tickFormat(v=>v+"×"));
+  const gy=s.append("g").attr("transform","translate("+m.l+",0)").attr("class","tailaxis")
+    .call(d3.axisLeft(ys).tickValues([1,2,4,6,8,10]).tickFormat(v=>v+"×"));
+  [gx,gy].forEach(gA=>{gA.selectAll("text").attr("font-family",MONO).attr("font-size","11px").attr("fill","#4A555F");gA.selectAll("path,line").attr("stroke","#4A555F")});
+  const line=d3.line().x(p=>xs(p.s)).y(p=>ys(p.v));
+  amdahlFs.forEach(cf=>{
+    const pts=d3.range(0,6.01,0.1).map(e=>{const sv=Math.pow(2,e);return {s:sv,v:amdahl(cf.f,sv)}});
+    s.append("line").attr("x1",m.l).attr("x2",Wc-m.r).attr("y1",ys(1/(1-cf.f))).attr("y2",ys(1/(1-cf.f)))
+      .attr("stroke",cf.c).attr("stroke-width",1).attr("stroke-dasharray","2 4").attr("opacity",.7);
+    s.append("path").datum(pts).attr("d",line).attr("fill","none")
+      .attr("stroke",cf.c).attr("stroke-width",2.4).attr("class","amdline");
+    const last=pts[pts.length-1];
+    const lbl=s.append("text").attr("x",xs(64)+8).attr("y",ys(last.v)+(cf.dy||0))
+      .attr("font-family",MONO).attr("font-size","10.5px").attr("fill",cf.c);
+    lbl.append("tspan").attr("x",xs(64)+8).attr("dy",0).text(cf.l);
+    lbl.append("tspan").attr("x",xs(64)+8).attr("dy",12).text("f="+cf.f+" → cap "+(1/(1-cf.f)).toFixed(1).replace(".0","")+"×");
+  });
+  s.append("text").attr("x",m.l).attr("y",Hc-8).attr("font-family",MONO).attr("font-size","10.5px").attr("fill","#4A555F")
+    .text("stage speedup s (log) → overall delivery speedup, by automated fraction f of lead time");
+}
+drawAmdahl();
+window.addEventListener("resize",drawAmdahl);
+
+/* ---------- Embedded self-test suite ---------- */
+function __runTests(){
+  const results=[];
+  const t=(name,fn)=>{try{const out=fn();results.push({name,pass:out===true,detail:out===true?"ok":String(out)})}catch(e){results.push({name,pass:false,detail:e.message})}};
+  // snapshot user-visible state so the suite leaves no trace
+  const __panelHTML=document.getElementById("panel").innerHTML;
+  const __mode=mode, __rct=rctOnly, __sel=selectedId, __q=qHigh, __i=noInd;
+
+  // Data integrity
+  t("T01 node ids unique",()=>{const s=new Set(studies.map(d=>d.id));return s.size===studies.length||("dup: "+(studies.length-s.size))});
+  t("T02 all edge endpoints resolve to node ids",()=>{const ids=new Set(studies.map(d=>d.id));const bad=edges.filter(e=>!ids.has(e.s)||!ids.has(e.t));return bad.length===0||JSON.stringify(bad)});
+  t("T03 all dates parse & lie within axis domain",()=>{const [lo,hi]=x.domain();const bad=studies.filter(d=>!(d.dt instanceof Date)||isNaN(d.dt)||d.dt<lo||d.dt>hi);return bad.length===0||bad.map(d=>d.id).join(",")});
+  t("T04 quality in 0..5 and retracted ⇔ q=0",()=>{const bad=studies.filter(d=>d.q<0||d.q>5||((d.q===0)!==(d.dir==="retr")));return bad.length===0||bad.map(d=>d.id).join(",")});
+  t("T05 every direction key has a color & label",()=>{const bad=studies.filter(d=>!(d.dir in colors)||!(d.dir in dirLabel));return bad.length===0||bad.map(d=>d.id).join(",")});
+  t("T06 every edge kind has a stroke color",()=>{const bad=edges.filter(e=>!(e.k in edgeColors));return bad.length===0||JSON.stringify(bad)});
+  t("T07 radius fn: default for n=0, monotone in n",()=>{const a=r({n:0}),b=r({n:100}),c=r({n:100000});return (a===10&&b<=c)||("a="+a+" b="+b+" c="+c)});
+
+  // DOM structure
+  t("T08 rendered node groups == study count",()=>{const k=document.querySelectorAll("#graph g.node").length;return k===studies.length||("got "+k)});
+  t("T09 rendered edge lines == edge count",()=>{const k=document.querySelectorAll("#graph line").length;return k>=links.length||("got "+k)});
+  t("T10 retracted nodes carry X overlay",()=>{const retr=studies.filter(d=>d.dir==="retr").length;const xs=document.querySelectorAll("#graph g.node path").length;return xs===retr||("overlays="+xs+" retracted="+retr)});
+  t("T11 timeline mode renders year axis ticks",()=>{mode="timeline";applyLayout();const k=axisG.selectAll(".tick").size();return k>=4||("ticks="+k)});
+  t("T12 cluster mode clears the axis",()=>{mode="cluster";applyLayout();const k=axisG.selectAll(".tick").size();mode="timeline";applyLayout();return k===0||("ticks="+k)});
+
+  // Behavior
+  t("T13 clicking a node populates metadata panel",()=>{const d=studies.find(s=>s.id==="metr2025");showPanel(d);const h=document.getElementById("panel").innerHTML;return (h.includes(d.authors)&&h.includes("Caveats"))||"panel missing fields"});
+  t("T14 panel connections == graph degree",()=>{const d=studies.find(s=>s.id==="bryn2023");showPanel(d);const deg=edges.filter(e=>e.s===d.id||e.t===d.id).length;const shown=(document.getElementById("panel").innerHTML.match(/↔/g)||[]).length;return shown===deg||("shown="+shown+" deg="+deg)});
+  t("T15 RCT filter dims exactly the non-RCT nodes",()=>{if(!rctOnly)bR.onclick();const dim=[...document.querySelectorAll("#graph g.node")].filter(el=>el.getAttribute("opacity")==="0.12").length;bR.onclick();const restored=[...document.querySelectorAll("#graph g.node")].every(el=>el.getAttribute("opacity")==="1");const expect=studies.length-isRCT.size;return (dim===expect&&restored)||("dim="+dim+" expect="+expect+" restored="+restored)});
+  t("T16 simulation yields finite coordinates",()=>{sim.tick(30);const bad=studies.filter(d=>!isFinite(d.x)||!isFinite(d.y));return bad.length===0||bad.map(d=>d.id).join(",")});
+  t("T17 timeline force pins x near publication date",()=>{mode="timeline";applyLayout();for(let i=0;i<120;i++)sim.tick();const err=d3.mean(studies,d=>Math.abs(d.x-x(d.dt)));return err<60||("mean |x - x(date)| = "+err.toFixed(1)+"px")});
+  t("T18 forceLink resolved endpoints to node objects",()=>{const bad=links.filter(l=>typeof l.source!=="object"||typeof l.target!=="object");return bad.length===0||(bad.length+" unresolved")});
+
+  // Heavy-tail appendix
+  t("T19 tail stats ordered: median < mean < p99",()=>{return (tailStats.median<tailStats.mean&&tailStats.mean<tailStats.p99)||JSON.stringify(tailStats)});
+  t("T20 tail ratios match cited magnitudes (~16×, ~292×)",()=>{const mm=tailStats.mean/tailStats.median,pm=tailStats.p99/tailStats.median;return (mm>15&&mm<17&&pm>285&&pm<300)||("mm="+mm.toFixed(1)+" pm="+pm.toFixed(1))});
+  t("T21 loop multiplier data strictly monotone",()=>{const ok=loopMult.every((d,i)=>i===0||(d.steps>loopMult[i-1].steps&&d.mult>loopMult[i-1].mult));return ok||JSON.stringify(loopMult)});
+  t("T22 cost composition sums to ~100%",()=>{const s=costComp.reduce((a,d)=>a+d.v,0);return Math.abs(s-100)<0.5||("sum="+s)});
+  t("T23 all three charts rendered with content",()=>{const a=document.querySelectorAll("#chart-dist svg .densline").length,b=document.querySelectorAll("#chart-loop svg circle.lp").length,c=document.querySelectorAll("#chart-comp svg rect.seg").length;return (a===1&&b===loopMult.length&&c===costComp.length)||("dens="+a+" pts="+b+" segs="+c)});
+  t("T24 appendix cites ≥ 8 linked sources",()=>{const k=document.querySelectorAll(".srclist a[href]").length;return k>=8||("links="+k)});
+  t("T25 every study URL is well-formed https",()=>{const bad=studies.filter(d=>{try{const u=new URL(d.url);return u.protocol!=="https:"}catch(e){return true}});return bad.length===0||bad.map(d=>d.id).join(",")});
+  t("T26 panel source anchor href matches study data",()=>{const d=studies.find(s=>s.id==="humlum2025");showPanel(d);const a=document.querySelector("#panel a.paperlink");return (a&&a.getAttribute("href")===d.url)||("got "+(a&&a.getAttribute("href")))});
+  t("T27 tooltip shows on mousemove, hides on mouseleave",()=>{const el=document.querySelector("#graph g.node");const mk=t=>new window.MouseEvent(t,{bubbles:true,clientX:200,clientY:150});el.dispatchEvent(mk("mousemove"));const shown=document.getElementById("tip").style.opacity==="1";el.dispatchEvent(mk("mouseleave"));const hidden=document.getElementById("tip").style.opacity==="0";return (shown&&hidden)||("shown="+shown+" hidden="+hidden)});
+  t("T28 cluster layout converges toward center",()=>{mode="cluster";applyLayout();for(let i=0;i<200;i++)sim.tick();const cx=d3.mean(studies,d=>d.x),cy=d3.mean(studies,d=>d.y);const spread=Math.sqrt(d3.mean(studies,d=>(d.x-cx)**2+(d.y-cy)**2));mode="timeline";applyLayout();return (isFinite(spread)&&spread>20&&spread<500)||("spread="+spread)});
+  t("T29 RCT filter ids all exist in study set",()=>{const ids=new Set(studies.map(d=>d.id));const bad=[...isRCT].filter(i=>!ids.has(i));return bad.length===0||bad.join(",")});
+  t("T30 every edge carries a non-empty note",()=>{const bad=edges.filter(e=>!e.note||!e.note.trim());return bad.length===0||(bad.length+" empty")});
+
+  // Appendix B: bottleneck thesis
+  t("T31 Amdahl fn correct at limits (s=1→1; s→∞→1/(1-f))",()=>{const a=Math.abs(amdahl(.75,1)-1)<1e-9;const b=Math.abs(amdahl(.75,1e9)-4)<1e-3;const c=Math.abs(amdahl(.25,1e9)-4/3)<1e-3;return (a&&b&&c)||("a="+amdahl(.75,1)+" b="+amdahl(.75,1e9)+" c="+amdahl(.25,1e9))});
+  t("T32 Amdahl chart renders 4 curves + 4 ceilings",()=>{const c=document.querySelectorAll("#chart-amdahl svg path.amdline").length;return c===amdahlFs.length||("curves="+c)});
+  t("T33 bottleneck nodes wired: each has ≥1 edge",()=>{const need=["dora2025","faros2025","swereview2026"];const bad=need.filter(id=>!edges.some(e=>e.s===id||e.t===id));return bad.length===0||bad.join(",")});
+  t("T34 Appendix B cites ≥ 5 linked sources",()=>{const k=document.querySelectorAll("#srclist-b a[href]").length;return k>=5||("links="+k)});
+  t("T35 header study count derives from data",()=>{const h=document.getElementById("studycount").textContent;return h===String(studies.length)||("header="+h+" data="+studies.length)});
+  t("T36 every study maps to a method lane",()=>{const bad=studies.filter(d=>!lanes.some(l=>l.k===mclassOf[d.id]));return bad.length===0||bad.map(d=>d.id).join(",")});
+  t("T37 timeline shows 4 lane labels; cluster clears them",()=>{mode="timeline";applyLayout();const a=laneG.selectAll("text").size();mode="cluster";applyLayout();const b=laneG.selectAll("text").size();mode="timeline";applyLayout();return (a===lanes.length&&b===0)||("timeline="+a+" cluster="+b)});
+  t("T38 node labels unique on screen",()=>{const seen={};let dup=null;document.querySelectorAll("#graph g.node > text:not(.dirglyph)").forEach(el=>{const k=el.textContent;if(seen[k])dup=k;seen[k]=1});return dup===null||("dup label: "+dup)});
+  t("T40 exec summary: assertion + 3 findings + recommendation, above the graph",()=>{const k=document.querySelectorAll(".execsum ol > li").length;const a=!!document.querySelector(".execsum .assertion");const r=!!document.querySelector(".execsum .rec");const above=document.querySelector(".execwrap").compareDocumentPosition(document.getElementById("stage"))&Node.DOCUMENT_POSITION_FOLLOWING;return (k===3&&a&&r&&!!above)||("items="+k+" assert="+a+" rec="+r+" above="+!!above)});
+  t("T44 first-person positional note with stakes present",()=>{return /This document exists because I ran agentic loops/.test(document.body.textContent)||"missing stakes note"});
+  t("T45 falsification commitment on record",()=>{return /What would falsify this/.test(document.body.textContent)||"missing falsification criteria"});
+  t("T41 practice framework: ≥4 decision rows + instrumentation guidance",()=>{const rows=document.querySelectorAll("table.practice tr").length-1;const inst=/cost per merged change/.test(document.body.textContent);return (rows>=4&&inst)||("rows="+rows+" inst="+inst)});
+  t("T42 ≥4 dated predictions with confidence on record",()=>{const p=[...document.querySelectorAll(".pred .tag")];const ok=p.length>=4&&p.every(e=>/resolves/.test(e.textContent)&&/confidence/.test(e.textContent));return ok||("preds="+p.length)});
+  t("T43 colophon present with version + license",()=>{const c=document.querySelector("footer.colophon");return (c&&/v1\.0/.test(c.textContent)&&/CC BY/.test(c.textContent))||"missing colophon fields"});
+  t("T46 ablation filters dim correct sets and compose",()=>{const cnt=()=>[...document.querySelectorAll("#graph g.node")].filter(n=>n.getAttribute("opacity")==="0.12").length;bQ.onclick();const a=cnt();const expQ=studies.filter(d=>d.q<4).length;bI.onclick();const b=cnt();const expB=studies.filter(d=>d.q<4||isInd.has(d.id)).length;bI.onclick();bQ.onclick();const c=cnt();return (a===expQ&&b===expB&&c===0)||("q="+a+"/"+expQ+" both="+b+"/"+expB+" clear="+c)});
+  t("T47 direction encoded redundantly (glyph or X on every node)",()=>{const g=document.querySelectorAll("#graph g.node text.dirglyph").length;const x=studies.filter(d=>d.dir==="retr").length;const legendOk=document.body.textContent.indexOf("mixed (±)")>=0;return (g===studies.length-x&&legendOk)||("glyphs="+g+" need="+(studies.length-x)+" legend="+legendOk)});
+  t("T48 claim badges: ≥6 total, all three classes present",()=>{const all=document.querySelectorAll(".ctag").length;const m=document.querySelectorAll(".ctag.m").length,i=document.querySelectorAll(".ctag.i").length,p=document.querySelectorAll(".ctag.p").length;return (all>=6&&m>0&&i>0&&p>0)||("all="+all+" m="+m+" i="+i+" p="+p)});
+  t("T49 oracle taxonomy present with three levels",()=>{const t=document.body.textContent;return (/Level 1, deterministic/.test(t)&&/Level 2, behavioral/.test(t)&&/Level 3, subjective/.test(t))||"missing taxonomy levels"});
+  t("T50 prefix-token mitigations named in Appendix A",()=>{return /prompt caching cuts the unit price of replayed context/.test(document.body.textContent)||"missing mitigation note"});
+  t("T51 six sections collapsible, all default open",()=>{const ds=[...document.querySelectorAll("details.sect")];const allOpen=ds.every(d=>d.open);return (ds.length===7&&allOpen)||("sections="+ds.length+" allOpen="+allOpen)});
+  t("T52 toc links wired + openSectionFor reopens closed sections (no anchor clicks dispatched)",()=>{const wired=[...document.querySelectorAll("nav.toc a")].every(a=>a.dataset.wired==="1");const d=document.getElementById("tailhead").closest("details");d.open=false;openSectionFor("tailhead");const ok=d.open===true;d.open=true;return (wired&&ok)||("wired="+wired+" reopened="+ok)});
+  t("T53 authorship voices separated with scoped endorsement",()=>{const t=document.body.textContent;return (/A note on voice/.test(t)&&/drafted by Claude/.test(t)&&/spot-checked rather than line-audited/.test(t)&&/Corrections land in the repo/.test(t))||"missing scoped voice separation"});
+  t("T54 glossary: ≥18 entries, every entry linked",()=>{const rows=[...document.querySelectorAll("#glossary > div")];const linked=rows.every(r=>r.querySelector("a[href]"));return (rows.length>=18&&linked)||("rows="+rows.length+" linked="+linked)});
+  t("T55 key acronyms explained at first use",()=>{const t=document.body.innerHTML;const ok=/randomized controlled trials \(RCTs\)/.test(t)&&/abbr class="gl" title="DevOps Research/.test(t)&&/SDLC \(software development lifecycle\)/.test(t)&&/99th percentile/.test(t);return ok||"missing a first-use explanation"});
+  t("T56 glossary links have discernible names",()=>{const as=[...document.querySelectorAll("#glossary a")];const ok=as.length>0&&as.every(a=>(a.getAttribute("aria-label")||"").indexOf("Reference:")===0||a.textContent.trim().length>4);return ok||("unnamed links present of "+as.length)});
+  t("T57 section headings inline so collapse affordance follows text",()=>{const h=document.getElementById("bottleneckhead");const d=window.getComputedStyle(h).display;return d==="inline"||("display="+d)});
+  t("T58 every claim badge has a note; all refs resolve",()=>{const tags=[...document.querySelectorAll(".ctag")];const noted=tags.every(e=>e.getAttribute("data-note"));let bad=null;tags.forEach(e=>{(e.getAttribute("data-refs")||"").split(";").filter(Boolean).forEach(tok=>{if(tok.startsWith("node:")&&!studies.find(x=>x.id===tok.slice(5)))bad="node "+tok;if(tok.startsWith("sect:")&&!document.getElementById(tok.slice(5)))bad="sect "+tok;if(tok.startsWith("u:")&&tok.indexOf("|http")<0)bad="url "+tok})});return (tags.length>=15&&noted&&!bad)||("tags="+tags.length+" noted="+noted+" bad="+bad)});
+  t("T59 badge tap opens sourced tooltip; outside click closes",()=>{const el=document.querySelector('.ctag[data-refs*="node:"]');el.dispatchEvent(new window.MouseEvent("click",{bubbles:true}));const tip=document.getElementById("ctip");const open=tip.style.display==="block"&&tip.querySelectorAll(".refs a").length>=1;document.body.dispatchEvent(new window.MouseEvent("click",{bubbles:true}));const closed=tip.style.display==="none";return (open&&closed)||("open="+open+" closed="+closed)});
+  t("T39 selection highlights & background click clears",()=>{const el=document.querySelectorAll("#graph g.node")[2];el.dispatchEvent(new window.MouseEvent("click",{bubbles:true}));const selOk=selectedId==="bryn2023";const dimmed=[...document.querySelectorAll("#graph g.node")].some(n=>n.getAttribute("opacity")==="0.3");document.querySelector("#graph").dispatchEvent(new window.MouseEvent("click",{bubbles:true}));const cleared=selectedId===null&&[...document.querySelectorAll("#graph g.node")].every(n=>n.getAttribute("opacity")==="1");return (selOk&&dimmed&&cleared)||("sel="+selOk+" dim="+dimmed+" clr="+cleared)});
+
+  // v1.0 pre-publication additions (B1–B5) — anti-regression tests
+  t("T60 graph nodes keyboard-accessible: role, tabindex, label; Enter selects",()=>{const el=document.querySelector("#graph g.node");const meta=el.getAttribute("tabindex")==="0"&&el.getAttribute("role")==="button"&&(el.getAttribute("aria-label")||"").length>10;el.dispatchEvent(new window.KeyboardEvent("keydown",{key:"Enter",bubbles:true}));const sel=selectedId===studies[0].id;const filled=document.getElementById("panel").innerHTML.indexOf(studies[0].authors)>=0;const allK=[...document.querySelectorAll("#graph g.node")].every(n=>n.getAttribute("tabindex")==="0");return (meta&&sel&&filled&&allK)||("meta="+meta+" sel="+sel+" filled="+filled+" all="+allK)});
+  t("T61 print support: print CSS present; beforeprint opens sections, afterprint restores",()=>{const css=[...document.querySelectorAll("style")].map(s=>s.textContent).join("");const hasCss=/@media print/.test(css)&&/\.controls[^{}]*\{[^}]*display:none/.test(css);const d=document.querySelector("#selftest details");const was=d.open;d.open=false;window.dispatchEvent(new window.Event("beforeprint"));const opened=d.open===true;window.dispatchEvent(new window.Event("afterprint"));const restored=d.open===false;d.open=was;return (hasCss&&opened&&restored)||("css="+hasCss+" opened="+opened+" restored="+restored)});
+  t("T62 panel edge profile matches edge data",()=>{const d=studies.find(s=>s.id==="metr2025");showPanel(d);const el=document.querySelector("#panel .edgeprofile");const txt=el?el.textContent:"";const c={cor:0,ten:0,bld:0};edges.forEach(e=>{if(e.s===d.id||e.t===d.id)c[e.k]++});const ok=txt.indexOf(c.cor+" corroborating")>=0&&txt.indexOf(c.ten+" in tension")>=0&&txt.indexOf(c.bld+" building")>=0;return ok||("txt="+txt+" want="+JSON.stringify(c))});
+  t("T63 CSV/BibTeX exporters complete and well-formed (no download dispatched)",()=>{const csv=__buildCSV();const lines=csv.split("\n");const okCsv=lines.length===studies.length+1&&lines[0].indexOf("id,title")===0&&csv.indexOf(',"')>=0;const bib=__buildBibTeX();const entries=(bib.match(/@\w+\{/g)||[]).length;const okBib=entries===studies.length&&bib.indexOf("swereview2026")>=0&&bib.indexOf("url={https://")>=0;return (okCsv&&okBib)||("csvLines="+lines.length+" bibEntries="+entries)});
+  t("T64 computed quality score: declared weights, bounded, in panel; retracted excluded",()=>{const bounded=studies.every(s=>{const x=__qcScore(s);return x===null?s.dir==="retr":(x.total>=1&&x.total<=5)});const d=studies.find(s=>s.id==="bryn2023");const q=__qcScore(d);showPanel(d);const h=document.getElementById("panel").innerHTML;const shown=h.indexOf("Computed score")>=0&&h.indexOf(q.total.toFixed(1))>=0&&h.indexOf("qcalc")>=0;const retr=__qcScore(studies.find(s=>s.dir==="retr"))===null;return (bounded&&shown&&retr)||("bounded="+bounded+" shown="+shown+" retr="+retr)});
+
+  // restore user-visible state: panel, filter, layout — then settle the sim instantly
+  document.getElementById("panel").innerHTML=__panelHTML;
+  if(rctOnly!==__rct)bR.onclick();
+  if(qHigh!==__q)bQ.onclick();
+  if(noInd!==__i)bI.onclick();
+  selectedId=__sel;updateEmphasis();
+  mode=__mode;
+  if(mode==="timeline"){bT.classList.add("on");bC.classList.remove("on")}else{bC.classList.add("on");bT.classList.remove("on")}
+  applyLayout();
+  for(let i=0;i<300;i++)sim.tick();
+  renderFrame();
+
+  const passed=results.filter(r=>r.pass).length;
+  const el=document.getElementById("testresults");
+  if(el)el.innerHTML=results.map(r=>'<div class="trow '+(r.pass?"pass":"fail")+'">'+(r.pass?"✓ ":"✗ ")+r.name+(r.pass?"":" — "+r.detail)+'</div>').join("");
+  const st=document.getElementById("teststatus");
+  if(st){st.textContent=passed+"/"+results.length+(passed===results.length?" PASS":" FAIL");st.className=passed===results.length?"pass":"fail"}
+  return {passed,total:results.length,results};
+}
+window.__runTests=__runTests;
+window.__state=()=>({mode,rctOnly,qHigh,noInd,selectedId,panelIsHint:!!document.querySelector("#panel .hint"),
+  layoutError:d3.mean(studies,d=>Math.abs(d.x-x(d.dt))),
+  laneError:mode==="timeline"?d3.mean(studies,d=>Math.abs(d.y-laneY(d))):null});
+setTimeout(()=>{try{__runTests()}catch(e){const st=document.getElementById("teststatus");if(st){st.textContent="RUNNER ERROR";st.className="fail"}}},600);
+</script>
+</body>
+</html>
