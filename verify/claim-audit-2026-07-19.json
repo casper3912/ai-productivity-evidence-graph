@@ -1,0 +1,778 @@
+[
+ {
+  "id": "peng2023",
+  "url": "https://export.arxiv.org/abs/2302.06590",
+  "extraction": "fallback",
+  "chars": 3814,
+  "year": {
+   "expect": 2023,
+   "verdict": "confirmed",
+   "anchor": "Impact"
+  },
+  "n": {
+   "expect": 95,
+   "verdict": "mismatch",
+   "anchor": "developers",
+   "near": [
+    2023.0,
+    3.0,
+    55.8,
+    2302.0659,
+    2302.0659,
+    1.0
+   ]
+  },
+  "stat": {
+   "expect": 55.8,
+   "context": "Copilot group finished 55.8% faster",
+   "verdict": "confirmed",
+   "anchor": "faster",
+   "near": [
+    3.0,
+    55.8,
+    2302.0659,
+    2302.0659,
+    1.0,
+    10.4855
+   ]
+  }
+ },
+ {
+  "id": "noyzhang2023",
+  "url": "https://www.science.org/doi/10.1126/science.adh2586",
+  "status": "UNREACHABLE",
+  "error": "HTTP Error 403: Forbidden",
+  "checked": false
+ },
+ {
+  "id": "bryn2023",
+  "url": "https://www.nber.org/papers/w31161",
+  "extraction": "fallback",
+  "chars": 7453,
+  "year": {
+   "expect": 2023,
+   "verdict": "confirmed",
+   "anchor": "Generative"
+  },
+  "n": {
+   "expect": 5172,
+   "verdict": "mismatch",
+   "anchor": "workers",
+   "near": [
+    2026.0,
+    31161.0,
+    10.3386,
+    31161.0,
+    2023.0,
+    2023.0
+   ]
+  },
+  "stat": {
+   "expect": 14.0,
+   "context": "+14\u201315% issues resolved/hour; novices +34%, top experts \u22480",
+   "verdict": "confirmed",
+   "anchor": "issues",
+   "near": [
+    31161.0,
+    10.3386,
+    31161.0,
+    2023.0,
+    2023.0,
+    5179.0
+   ]
+  }
+ },
+ {
+  "id": "dellacqua2023",
+  "url": "https://www.hbs.edu/faculty/Pages/item.aspx?num=64700",
+  "extraction": "fallback",
+  "chars": 4225,
+  "year": {
+   "expect": 2023,
+   "verdict": "confirmed",
+   "anchor": "Navigating"
+  },
+  "n": {
+   "expect": 758,
+   "verdict": "confirmed",
+   "anchor": "workers",
+   "near": [
+    758.0,
+    4.0,
+    4.0,
+    18.0,
+    12.2,
+    25.1
+   ]
+  },
+  "stat": {
+   "expect": 12.2,
+   "context": "Inside frontier: +12.2% tasks, +25% speed, +40% quality. Out",
+   "verdict": "confirmed",
+   "anchor": "tasks",
+   "near": [
+    58.0,
+    758.0,
+    58.0,
+    758.0,
+    4.0,
+    4.0
+   ]
+  }
+ },
+ {
+  "id": "otis2024",
+  "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4671369",
+  "status": "UNREACHABLE",
+  "error": "HTTP Error 403: Forbidden",
+  "checked": false
+ },
+ {
+  "id": "cui2024",
+  "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4945566",
+  "status": "UNREACHABLE",
+  "error": "HTTP Error 403: Forbidden",
+  "checked": false
+ },
+ {
+  "id": "tonerrodgers2024",
+  "url": "https://the-decoder.com/mit-says-a-high-profile-ai-productivity-study-used-data-that-cannot-be-trusted/",
+  "extraction": "fallback",
+  "chars": 5543,
+  "year": {
+   "expect": 2024,
+   "verdict": "confirmed",
+   "anchor": "Artificial"
+  },
+  "n": {
+   "expect": 1018,
+   "verdict": "mismatch",
+   "anchor": "users",
+   "near": [
+    6.0,
+    25.0,
+    975.0,
+    5.0,
+    3.0,
+    5.6
+   ]
+  },
+  "stat": {
+   "expect": 44.0,
+   "context": "Claimed +44% materials discovered, +39% patents. MIT: 'no co",
+   "verdict": "confirmed",
+   "anchor": "materials",
+   "near": [
+    2024.0,
+    1000.0,
+    44.0,
+    39.0,
+    17.0,
+    16.0
+   ]
+  }
+ },
+ {
+  "id": "humlum2025",
+  "url": "https://www.nber.org/papers/w33777",
+  "extraction": "fallback",
+  "chars": 7333,
+  "year": {
+   "expect": 2025,
+   "verdict": "confirmed",
+   "anchor": "Language"
+  },
+  "n": {
+   "expect": 25000,
+   "verdict": "mismatch",
+   "anchor": "participants",
+   "near": [
+    2025.0,
+    2025.0
+   ]
+  },
+  "stat": {
+   "expect": 2.8,
+   "context": "~2.8% time saved; no significant effect on earnings or hours",
+   "verdict": "mismatch",
+   "anchor": "Language",
+   "near": [
+    2025.0,
+    2025.0
+   ]
+  }
+ },
+ {
+  "id": "metr2025",
+  "url": "https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/",
+  "extraction": "fallback",
+  "chars": 20036,
+  "year": {
+   "expect": 2025,
+   "verdict": "confirmed",
+   "anchor": "Measuring"
+  },
+  "n": {
+   "expect": 16,
+   "verdict": "confirmed",
+   "anchor": "developers",
+   "near": [
+    2025.0,
+    2025.0,
+    2025.0,
+    19.0,
+    2025.0,
+    2026.0
+   ]
+  },
+  "stat": {
+   "expect": 19.0,
+   "context": "19% slower with AI (246 real tasks) \u2014 while participants est",
+   "verdict": "confirmed",
+   "anchor": "slower",
+   "near": [
+    2025.0,
+    2025.0,
+    19.0,
+    2025.0,
+    2026.0,
+    2025.0
+   ]
+  }
+ },
+ {
+  "id": "kosmyna2025",
+  "url": "https://export.arxiv.org/abs/2506.08872",
+  "extraction": "fallback",
+  "chars": 5500,
+  "year": {
+   "expect": 2025,
+   "verdict": "confirmed",
+   "anchor": "ChatGPT"
+  },
+  "n": {
+   "expect": 54,
+   "verdict": "confirmed",
+   "anchor": "participants",
+   "near": [
+    7.0,
+    54.0,
+    1.0,
+    3.0,
+    18.0,
+    4.0
+   ]
+  }
+ },
+ {
+  "id": "nanda2025",
+  "url": "https://nanda.media.mit.edu/",
+  "extraction": "fallback",
+  "chars": 8077,
+  "year": {
+   "expect": 2025,
+   "verdict": "not_found",
+   "anchor": null
+  },
+  "n": {
+   "expect": 800,
+   "verdict": "mismatch",
+   "anchor": "reviews",
+   "near": [
+    50000.0,
+    50000.0,
+    100000.0
+   ]
+  },
+  "stat": {
+   "expect": 95.0,
+   "context": "~95% of enterprise GenAI pilots show no measurable P&L retur",
+   "verdict": "not_found",
+   "anchor": null,
+   "near": []
+  }
+ },
+ {
+  "id": "canaries2025",
+  "url": "https://digitaleconomy.stanford.edu/publications/canaries-in-the-coal-mine/",
+  "extraction": "fallback",
+  "chars": 6652,
+  "year": {
+   "expect": 2025,
+   "verdict": "confirmed",
+   "anchor": "Canaries"
+  },
+  "n": {
+   "expect": 1000000,
+   "verdict": "mismatch",
+   "anchor": "workers",
+   "near": [
+    11.0,
+    13.0,
+    2025.0,
+    22.0,
+    25.0,
+    16.0
+   ]
+  },
+  "stat": {
+   "expect": 13.0,
+   "context": "~13% relative employment decline for 22\u201325 year-olds in most",
+   "verdict": "confirmed",
+   "anchor": "employment",
+   "near": [
+    11.0,
+    13.0,
+    2025.0,
+    22.0,
+    25.0,
+    16.0
+   ]
+  }
+ },
+ {
+  "id": "bick2025",
+  "url": "https://www.nber.org/papers/w32966",
+  "extraction": "fallback",
+  "chars": 7102,
+  "year": {
+   "expect": 2024,
+   "verdict": "confirmed",
+   "anchor": "Adoption"
+  },
+  "n": {
+   "expect": 10000,
+   "verdict": "mismatch",
+   "anchor": "respondents",
+   "near": [
+    32966.0,
+    10.3386,
+    32966.0,
+    2024.0,
+    2025.0,
+    2024.0
+   ]
+  },
+  "stat": {
+   "expect": 40.0,
+   "context": "~40% of US adults (18\u201364) use genAI; time saved \u22481.4% of wor",
+   "verdict": "confirmed",
+   "anchor": "Adoption",
+   "near": [
+    2026.0,
+    2026.0,
+    32966.0,
+    10.3386,
+    32966.0,
+    2024.0
+   ]
+  }
+ },
+ {
+  "id": "pwc2025",
+  "url": "https://www.pwc.com/gx/en/issues/artificial-intelligence/ai-jobs-barometer.html",
+  "extraction": "fallback",
+  "chars": 14702,
+  "year": {
+   "expect": 2025,
+   "verdict": "confirmed",
+   "anchor": "Global"
+  },
+  "n": {
+   "expect": 500000,
+   "verdict": "mismatch",
+   "anchor": "workers",
+   "near": [
+    42.0,
+    42.0,
+    75.0,
+    2.5
+   ]
+  },
+  "stat": {
+   "expect": 4.0,
+   "context": "Productivity growth ~4x in most AI-exposed industries; 56% w",
+   "verdict": "mismatch",
+   "anchor": "most",
+   "near": [
+    2026.0,
+    40.0,
+    40.0,
+    2.0,
+    42.0,
+    42.0
+   ]
+  }
+ },
+ {
+  "id": "anthropic_econ",
+  "url": "https://www.anthropic.com/economic-index",
+  "extraction": "fallback",
+  "chars": 1660,
+  "year": {
+   "expect": 2025,
+   "verdict": "mismatch",
+   "anchor": "Anthropic"
+  },
+  "n": {
+   "expect": 1000000,
+   "verdict": "mismatch",
+   "anchor": "Anthropic",
+   "near": [
+    26.0,
+    2026.0,
+    365.0,
+    26.0,
+    2026.0,
+    365.0
+   ]
+  }
+ },
+ {
+  "id": "gdpval2025",
+  "url": "https://openai.com/index/gdpval/",
+  "status": "UNREACHABLE",
+  "error": "HTTP Error 403: Forbidden",
+  "checked": false
+ },
+ {
+  "id": "metr2026",
+  "url": "https://metr.org/blog/2026-02-24-uplift-update/",
+  "extraction": "fallback",
+  "chars": 12139,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "Changing"
+  },
+  "n": {
+   "expect": 57,
+   "verdict": "confirmed",
+   "anchor": "developers",
+   "near": [
+    24.0,
+    2026.0,
+    2026.0,
+    2026.0,
+    2.0,
+    24.0
+   ]
+  },
+  "stat": {
+   "expect": 18.0,
+   "context": "Study collapsed: devs refused no-AI control arm. Raw signal ",
+   "verdict": "confirmed",
+   "anchor": "Developer",
+   "near": [
+    24.0,
+    2026.0,
+    2026.0,
+    24.0,
+    2026.0,
+    2026.0
+   ]
+  }
+ },
+ {
+  "id": "yotzov2026",
+  "url": "https://www.nber.org/papers/w34836",
+  "extraction": "fallback",
+  "chars": 7712,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "Firm Data on"
+  },
+  "n": {
+   "expect": 6000,
+   "verdict": "confirmed",
+   "anchor": "firms",
+   "near": [
+    34836.0,
+    10.3386,
+    34836.0,
+    2026.0,
+    2026.0,
+    6000.0
+   ]
+  },
+  "stat": {
+   "expect": 69.0,
+   "context": "69% of firms use AI; ~nine-in-ten report no productivity or ",
+   "verdict": "confirmed",
+   "anchor": "firms",
+   "near": [
+    34836.0,
+    10.3386,
+    34836.0,
+    2026.0,
+    2026.0,
+    6000.0
+   ]
+  }
+ },
+ {
+  "id": "hartley2026",
+  "url": "https://laweconcenter.org/resources/ai-productivity-and-labor-markets-a-review-of-the-empirical-evidence/",
+  "extraction": "fallback",
+  "chars": 86896,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "Market"
+  },
+  "n": {
+   "expect": 15000,
+   "verdict": "mismatch",
+   "anchor": "participants",
+   "near": [
+    2024.0,
+    33021.0,
+    2024.0,
+    33021.0,
+    300.0,
+    12.3
+   ]
+  },
+  "stat": {
+   "expect": 35.9,
+   "context": "35.9% of US workers used genAI by Dec 2025; small positive w",
+   "verdict": "confirmed",
+   "anchor": "workers",
+   "near": [
+    15.0,
+    50.0,
+    2024.0,
+    2025.0,
+    2025.0,
+    2021.0
+   ]
+  }
+ },
+ {
+  "id": "cfo2026",
+  "url": "https://www.nber.org/papers/w34984",
+  "extraction": "fallback",
+  "chars": 7715,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "Artificial"
+  },
+  "n": {
+   "expect": 750,
+   "verdict": "confirmed",
+   "anchor": "firms",
+   "near": [
+    34984.0,
+    10.3386,
+    34984.0,
+    2026.0,
+    750.0,
+    2026.0
+   ]
+  }
+ },
+ {
+  "id": "furman2026",
+  "url": "https://aleximas.substack.com/p/what-is-the-impact-of-ai-on-productivity",
+  "extraction": "fallback",
+  "chars": 46143,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "harvest"
+  },
+  "stat": {
+   "expect": 2.7,
+   "context": "US labor productivity ~2.7% growth in 2025, 2.2% above pre-p",
+   "verdict": "confirmed",
+   "anchor": "growth",
+   "near": [
+    2026.0,
+    2022.0,
+    2025.0,
+    1000.0,
+    100.0,
+    25.0
+   ]
+  }
+ },
+ {
+  "id": "metaprog2026",
+  "url": "https://export.arxiv.org/abs/2605.04779",
+  "extraction": "fallback",
+  "chars": 5264,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "analysis"
+  },
+  "n": {
+   "expect": 23,
+   "verdict": "confirmed",
+   "anchor": "n =",
+   "near": [
+    4.0,
+    23.0,
+    27.0,
+    2019.0,
+    2025.0,
+    1.0
+   ]
+  },
+  "stat": {
+   "expect": 0.33,
+   "context": "Productivity effect positive but heterogeneous (g=0.33, I\u00b2=9",
+   "verdict": "confirmed",
+   "anchor": "learning",
+   "near": [
+    2605.04779,
+    2605.04779,
+    6.0,
+    2026.0,
+    2605.04779,
+    2605.04779
+   ]
+  }
+ },
+ {
+  "id": "stanford2026",
+  "url": "https://aiindex.stanford.edu/",
+  "extraction": "fallback",
+  "chars": 7418,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "Stanford"
+  },
+  "stat": {
+   "expect": 14.0,
+   "context": "Gains track task structure: ~14\u201315% support, ~26% software, ",
+   "verdict": "mismatch",
+   "anchor": "support",
+   "near": [
+    12.0,
+    12.0,
+    5.0,
+    8.0,
+    5.0,
+    8.0
+   ]
+  }
+ },
+ {
+  "id": "dora2025",
+  "url": "https://dora.dev/insights/balancing-ai-tensions/",
+  "extraction": "fallback",
+  "chars": 17232,
+  "year": {
+   "expect": 2025,
+   "verdict": "confirmed",
+   "anchor": "assisted"
+  },
+  "n": {
+   "expect": 5000,
+   "verdict": "mismatch",
+   "anchor": "developers",
+   "near": [
+    2025.0,
+    2025.0,
+    1.0,
+    2025.0,
+    30.0,
+    1110.0
+   ]
+  },
+  "stat": {
+   "expect": 90.0,
+   "context": "90% use AI; higher adoption raises throughput AND instabilit",
+   "verdict": "confirmed",
+   "anchor": "adoption",
+   "near": [
+    10.0,
+    2026.0,
+    2025.0,
+    10.0,
+    2026.0,
+    2025.0
+   ]
+  }
+ },
+ {
+  "id": "faros2025",
+  "url": "https://www.faros.ai/blog/ai-software-engineering",
+  "extraction": "fallback",
+  "chars": 12896,
+  "year": {
+   "expect": 2025,
+   "verdict": "confirmed",
+   "anchor": "Productivity"
+  },
+  "n": {
+   "expect": 10000,
+   "verdict": "confirmed",
+   "anchor": "developers",
+   "near": [
+    2.0,
+    3.0,
+    4.0,
+    75.0,
+    10000.0,
+    1255.0
+   ]
+  },
+  "stat": {
+   "expect": 21.0,
+   "context": "+21% tasks completed, +98% PRs merged \u2014 but PR review time +",
+   "verdict": "confirmed",
+   "anchor": "tasks",
+   "near": [
+    75.0,
+    10000.0,
+    1255.0,
+    1.0,
+    21.0,
+    98.0
+   ]
+  }
+ },
+ {
+  "id": "swereview2026",
+  "url": "https://export.arxiv.org/abs/2607.06065",
+  "extraction": "fallback",
+  "chars": 4660,
+  "year": {
+   "expect": 2026,
+   "verdict": "confirmed",
+   "anchor": "Review"
+  },
+  "n": {
+   "expect": 500,
+   "verdict": "mismatch",
+   "anchor": "subjects",
+   "near": [
+    2607.06065,
+    2607.06065,
+    1.0,
+    10.4855,
+    2607.06065,
+    1.0
+   ]
+  },
+  "stat": {
+   "expect": 27.5,
+   "context": "Closed-loop review lifts resolve rate 27.5%\u219256.9% (Qwen3-30B",
+   "verdict": "mismatch",
+   "anchor": "Review",
+   "near": [
+    2607.06065,
+    2607.06065,
+    7.0,
+    2026.0,
+    2607.06065,
+    2607.06065
+   ]
+  }
+ }
+]
